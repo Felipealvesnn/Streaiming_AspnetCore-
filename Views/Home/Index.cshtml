@@ -126,7 +126,7 @@
                 userJoin(user);
                 console.info(`Connected as id user: ${user}`);
 
-            }).catch(err => console.error(err));
+            }).catch(err => console.log(err));
 
 
             hubConnection.on('updateOnlineUsers', (userList) => {
@@ -134,11 +134,12 @@
                 users = userList;
 
                 $('#usersdata li.user').remove();
-               
+            })
+
         
         })
 
-
+       
 
 
 

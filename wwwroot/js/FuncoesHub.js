@@ -74,7 +74,7 @@ btnOpenCamera.onclick = function () {
         }
         video.srcObject = null;
         btnOpenCamera.setAttribute('data-state', 'closed');
-        document.getElementById('imgHub').src = '';
+        document.getElementById('UploadStream').src = '';
         btnOpenCamera.classList.add('btn-info');
         btnOpenCamera.classList.remove('btn-danger');
         btnOpenCamera.innerHTML = "Open Camera";

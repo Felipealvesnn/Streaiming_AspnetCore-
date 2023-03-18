@@ -8,7 +8,7 @@
     <div class="col-12 text-center">
         <button id="btnOpenCamera" class="btn btn-info mx-auto" data-state="closed">Open camera</button>
     </div>
-    <div class="col-6">
+    <div class="col-6" @*style="display:none;"*@>
         <div class="card card-body bg-light m-2 h-100">
             <div><p id="lblState">Pronto para conectar</p></div>
 
@@ -119,6 +119,9 @@
 
 
         $(document).ready(function () {
+            server.value = scheme + "://" + document.location.hostname + port + "/ws";
+
+
             hubConnection.start().then(() => {
                 user = generateId();
                 userJoin(user);
@@ -127,7 +130,7 @@
             }).catch(err => console.error(err));
 
             hubConnection.on('AttUsuariosOnline', (userList) => {
-                console.info('Check online users...' + JSON.stringify(userList));
+                console.info('Atualizando quem ta online...' + JSON.stringify(userList));
                 users = userList;
 
                 $('#usersdata li.user').remove();
@@ -170,7 +173,7 @@
                     console.info('Chamada Recebida de: ' + JSON.stringify(callingUser));
                     caller = callingUser;
                     $('#callmodal').attr('data-callinguser', `${callingUser.username}`);
-                    $('#callmodal .modal-body').text(`${callingUser.username} is calling...`);
+                    $('#callmodal .modal-body').text(`${callingUser.username} EStá ligando...`);
                     $('#callmodal').modal('show');
                 });
             });

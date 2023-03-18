@@ -117,27 +117,127 @@
         var caller = null;
 
 
+
         $(document).ready(function () {
-
-            server.value = scheme + "://" + document.location.hostname + port + "/ws";
-
             hubConnection.start().then(() => {
                 user = generateId();
                 userJoin(user);
-                console.info(`Connected as id user: ${user}`);
+                console.info(`Connected as ${user}`);
 
-            }).catch(err => console.log(err));
+            }).catch(err => console.error(err));
 
-
-            hubConnection.on('updateOnlineUsers', (userList) => {
+            hubConnection.on('AttUsuariosOnline', (userList) => {
                 console.info('Check online users...' + JSON.stringify(userList));
                 users = userList;
 
                 $('#usersdata li.user').remove();
-            })
 
-        
-        })
+                $.each(userList, function (index) {
+                    var userIcon = '', status = '';
+                    if (userList[index].username === $("#IdUser").text()) {
+
+                    } else {
+                        var onlineUsers = '';
+                        onlineUsers += '<li class="list-group-item user" data-cid=' + userList[index].connectionId + ' data-username=' + userList[index].username + '>';
+                        onlineUsers += '<div class="d-lg-flex flex-row">';
+                        onlineUsers += '<div class="m-1 d-lg-flex justify-content-center align-items-center"><small>' + userList[index].username + '</small></div>';
+
+                        if (userList[index].username !== user) {
+                            onlineUsers += '<div class="d-flex flex-row justify-content-center align-items-center">';
+                            onlineUsers += '<div class="m-1 d-lg-flex justify-content-center align-items-center"><span data-callstatus=' + userList[index].inCall + '>' + ((userList[index].inCall == true) ? '<small>(Em Ligação)</small>' : '<small>(Idle)</small>') + '</span></div>';
+                            onlineUsers += '<div class="m-2"><button id="btnCallUser" type="button" class="btn btn-primary btn-sm" ' + ((userList[index].inCall == true) ? 'disabled' : '') + ' onclick="callUser(\'' + userList[index].connectionId + '\')">Ligar</button></div>';
+                            onlineUsers += '<div class="m-2"><button id="btnEndCall" type="button" class="btn btn-primary btn-sm" ' + ((userList[index].inCall == true) ? '' : 'disabled') + 'onclick="endCall(\'' + userList[index].connectionId + '\')">End</button></div>';
+                            onlineUsers += '</div>';
+                        }
+                        onlineUsers += '</div></li>';
+                        $('#usersdata').append(onlineUsers);
+                    }
+                });
+
+                const isCaller = users.length === 2;
+                peerConnection = new RTCPeerConnection(configuration);
+                peerConnection.onicecandidate = event => {
+                    if (event.candidate) {
+                        var targetUserConnectionId = users.filter(u => u.username != user);
+                        console.info(`Target user: ${targetUserConnectionId[0].username}`);
+                        hubConnection.invoke('sendData', JSON.stringify({ 'candidate': event.candidate }), targetUserConnectionId[0].connectionId).catch(err => console.error(err));
+                    }
+                };
+                if (isCaller) {
+                    console.info('Someone is also here...');
+                    peerConnection.onnegotiationneeded = () => {
+                        peerConnection.createOffer()
+                            .then((description) => {
+                                peerConnection.setLocalDescription(
+                                    description,
+                                    () => {
+                                        var targetUserConnectionId = users.filter(u => u.username != user);
+                                        hubConnection.invoke('sendData', JSON.stringify({ 'sdp': peerConnection.localDescription }), targetUserConnectionId[0].connectionId).catch(err => console.error(err));
+                                    },
+                                    (err) => console.info(err)
+                                );
+                            })
+                            .catch(err => console.error(err));
+                    }
+                }
+
+                peerConnection.ontrack = event => {
+                    const stream = event.streams[0];
+                    if (!remoteVideo.srcObject || remoteVideo.srcObject.id !== stream.id) {
+                        remoteVideo.srcObject = stream;
+                    }
+                };
+
+                navigator.mediaDevices.getUserMedia({
+                    audio: true,
+                    video: true,
+                }).then(stream => {
+                    // Display your local video in #localVideo element
+                    localVideo.srcObject = stream;
+                    // Add your stream to be sent to the conneting peer
+                    stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
+                }, (err) => console.error(err));
+            });
+
+            hubConnection.on('receiveData', (signalingUser, data) => {
+                var message = JSON.parse(data);
+
+                if (message.sdp) {
+                    peerConnection.setRemoteDescription(new RTCSessionDescription(message.sdp), () => {
+
+                        if (peerConnection.remoteDescription.type === 'offer') {
+                            peerConnection.createAnswer()
+                                .then((description) => {
+                                    peerConnection.setLocalDescription(
+                                        description,
+                                        () => {
+                                            var targetUserConnectionId = users.filter(u => u.username != user);
+                                            hubConnection.invoke('sendData', JSON.stringify({ 'sdp': peerConnection.localDescription }), targetUserConnectionId[0].connectionId)
+                                                .catch(err => console.error(err));
+                                        },
+                                        (err) => console.error(err)
+                                    );
+                                })
+                                .catch(err => console.error(err));
+                        }
+                    }, (err) => console.error(err));
+                } else if (message.candidate) {
+
+                    peerConnection.addIceCandidate(
+                        new RTCIceCandidate(message.candidate), () => { }, (err) => console.error(err)
+                    );
+                }
+
+            });
+
+            hubConnection.on('EmLigacao', (callingUser) => {
+                console.info('Incoming call from: ' + JSON.stringify(callingUser));
+                caller = callingUser;
+                $('#callmodal').attr('data-callinguser', `${callingUser.username}`);
+                $('#callmodal .modal-body').text(`${callingUser.username} is calling...`);
+                $('#callmodal').modal('show');
+            });
+        });
 
        
 

@@ -77,6 +77,8 @@
             .configureLogging(signalR.LogLevel.None)
             .build();
 
+        var IdConecçao = null
+
         var peerConnection;
         var configuration = { "iceServers": [{ "url": "stun:stun.l.google.com:19302" }] };
         var users = [];
@@ -90,6 +92,7 @@
             hubConnection.start().then(() => {
                 user = generateId();
                 userJoin(user);
+                IdConecçao =  hubConnection.connection.connectionId
                 console.info(`Connected as ${user}`);
 
             }).catch(err => console.error(err));

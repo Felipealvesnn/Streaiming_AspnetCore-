@@ -18,7 +18,7 @@ const userJoin = (username) => {
     console.info('Joining...');
     hubConnection.invoke("Join", username).catch((err) => {
         console.error(err);
-    });
+    })
     $("#IdUser").text(username);
 };
 

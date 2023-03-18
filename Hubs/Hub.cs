@@ -57,7 +57,7 @@ namespace WEbCam_Streaiming_AspnetCore.Hubs
                 return;
             }
 
-            await Clients.Client(targetConnectionId.ConnectionId).EmLigacao(callingUser);
+            await Clients.Client(targetConnectionId.ConnectionId).ChamadaRecebida(callingUser);
 
             _calls.Add(new Call
             {
@@ -80,7 +80,7 @@ namespace WEbCam_Streaiming_AspnetCore.Hubs
 
             if (targetUser == null)
             {
-                await Clients.Caller.LigacaoDesligada(targetConnectionId, "The user has left.");
+                await Clients.Caller.LigacaoDesligada(targetConnectionId, "Usuario Desligou");
                 return;
             }
 

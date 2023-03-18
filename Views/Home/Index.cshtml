@@ -154,89 +154,44 @@
                     }
                 });
 
-                const isCaller = users.length === 2;
-                peerConnection = new RTCPeerConnection(configuration);
-                peerConnection.onicecandidate = event => {
-                    if (event.candidate) {
-                        var targetUserConnectionId = users.filter(u => u.username != user);
-                        console.info(`Target user: ${targetUserConnectionId[0].username}`);
-                        hubConnection.invoke('sendData', JSON.stringify({ 'candidate': event.candidate }), targetUserConnectionId[0].connectionId).catch(err => console.error(err));
-                    }
-                };
-                if (isCaller) {
-                    console.info('Someone is also here...');
-                    peerConnection.onnegotiationneeded = () => {
-                        peerConnection.createOffer()
-                            .then((description) => {
-                                peerConnection.setLocalDescription(
-                                    description,
-                                    () => {
-                                        var targetUserConnectionId = users.filter(u => u.username != user);
-                                        hubConnection.invoke('sendData', JSON.stringify({ 'sdp': peerConnection.localDescription }), targetUserConnectionId[0].connectionId).catch(err => console.error(err));
-                                    },
-                                    (err) => console.info(err)
-                                );
-                            })
-                            .catch(err => console.error(err));
-                    }
-                }
 
-                peerConnection.ontrack = event => {
-                    const stream = event.streams[0];
-                    if (!remoteVideo.srcObject || remoteVideo.srcObject.id !== stream.id) {
-                        remoteVideo.srcObject = stream;
-                    }
-                };
 
-                navigator.mediaDevices.getUserMedia({
-                    audio: true,
-                    video: true,
-                }).then(stream => {
-                    // Display your local video in #localVideo element
-                    localVideo.srcObject = stream;
-                    // Add your stream to be sent to the conneting peer
-                    stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
-                }, (err) => console.error(err));
+
+                hubConnection.on('receiveData', (signalingUser, data) => {
+                    document.getElementById('imgHub').src = '';
+                    if (data.toString().startsWith('data:,') == false) {
+                        var image = new Image();
+                        image.src = `${data}`;
+                        document.getElementById('imgHub').src = image.src;
+                    }
+                });
+
+                hubConnection.on('ChamadaRecebida', (callingUser) => {
+                    console.info('Chamada Recebida de: ' + JSON.stringify(callingUser));
+                    caller = callingUser;
+                    $('#callmodal').attr('data-callinguser', `${callingUser.username}`);
+                    $('#callmodal .modal-body').text(`${callingUser.username} is calling...`);
+                    $('#callmodal').modal('show');
+                });
             });
 
-            hubConnection.on('receiveData', (signalingUser, data) => {
-                var message = JSON.parse(data);
 
-                if (message.sdp) {
-                    peerConnection.setRemoteDescription(new RTCSessionDescription(message.sdp), () => {
-
-                        if (peerConnection.remoteDescription.type === 'offer') {
-                            peerConnection.createAnswer()
-                                .then((description) => {
-                                    peerConnection.setLocalDescription(
-                                        description,
-                                        () => {
-                                            var targetUserConnectionId = users.filter(u => u.username != user);
-                                            hubConnection.invoke('sendData', JSON.stringify({ 'sdp': peerConnection.localDescription }), targetUserConnectionId[0].connectionId)
-                                                .catch(err => console.error(err));
-                                        },
-                                        (err) => console.error(err)
-                                    );
-                                })
-                                .catch(err => console.error(err));
-                        }
-                    }, (err) => console.error(err));
-                } else if (message.candidate) {
-
-                    peerConnection.addIceCandidate(
-                        new RTCIceCandidate(message.candidate), () => { }, (err) => console.error(err)
-                    );
-                }
-
+            hubConnection.on('LigaCaoAceita', (acceptingUser) => {
+                console.info('Ligação aceita ' + JSON.stringify(acceptingUser) + '.');
+                acceptinguser = acceptingUser;
             });
 
-            hubConnection.on('EmLigacao', (callingUser) => {
-                console.info('Incoming call from: ' + JSON.stringify(callingUser));
-                caller = callingUser;
-                $('#callmodal').attr('data-callinguser', `${callingUser.username}`);
-                $('#callmodal .modal-body').text(`${callingUser.username} is calling...`);
-                $('#callmodal').modal('show');
+            hubConnection.on('LidacaoNegada', (decliningUser, reason) => {
+                console.info('Call declined by ' + decliningUser.connectionId);
             });
+
+            hubConnection.on('LigacaoDesligada', (signalingUser, signal) => {
+                console.info('Ligação com ' + signalingUser.connectionId + ' Terminou: ' + signal);
+                document.getElementById('imgHub').src = '';
+            });
+
+
+
         });
 
        

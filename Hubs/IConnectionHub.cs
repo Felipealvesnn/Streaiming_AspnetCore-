@@ -8,7 +8,7 @@ namespace WEbCam_Streaiming_AspnetCore.Hubs
         Task AttUsuariosOnline(List<User> userList);
         Task LigaCaoAceita(User acceptingUser);
         Task LidacaoNegada(User decliningUser, string reason);
-        Task EmLigacao(User callingUser);
+        Task ChamadaRecebida(User callingUser);
         Task ReceiveData(User signalingUser, string signal);
         Task UploadStream(ChannelReader<string> stream);
         Task LigacaoDesligada(User signalingUser, string signal);

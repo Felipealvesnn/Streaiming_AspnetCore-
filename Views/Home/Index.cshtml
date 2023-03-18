@@ -125,7 +125,7 @@
             hubConnection.start().then(() => {
                 user = generateId();
                 userJoin(user);
-                console.info(`Connected as ${user}`);
+                console.info(`Conectado é:  ${user}`);
 
             }).catch(err => console.error(err));
 
@@ -149,7 +149,7 @@
                             onlineUsers += '<div class="d-flex flex-row justify-content-center align-items-center">';
                             onlineUsers += '<div class="m-1 d-lg-flex justify-content-center align-items-center"><span data-callstatus=' + userList[index].inCall + '>' + ((userList[index].inCall == true) ? '<small>(Em Ligação)</small>' : '<small>(Idle)</small>') + '</span></div>';
                             onlineUsers += '<div class="m-2"><button id="btnCallUser" type="button" class="btn btn-primary btn-sm" ' + ((userList[index].inCall == true) ? 'disabled' : '') + ' onclick="callUser(\'' + userList[index].connectionId + '\')">Ligar</button></div>';
-                            onlineUsers += '<div class="m-2"><button id="btnEndCall" type="button" class="btn btn-primary btn-sm" ' + ((userList[index].inCall == true) ? '' : 'disabled') + 'onclick="endCall(\'' + userList[index].connectionId + '\')">End</button></div>';
+                            onlineUsers += '<div class="m-2"><button id="btnEndCall" type="button" class="btn btn-primary btn-sm" ' + ((userList[index].inCall == true) ? '' : 'disabled') + ' onclick="endCall(\'' + userList[index].connectionId + '\')">Desligar</button></div>';
                             onlineUsers += '</div>';
                         }
                         onlineUsers += '</div></li>';

@@ -40,7 +40,7 @@ const dataStream = (acceptingUser) => {
 };
 
 const intervalHandle = setInterval(() => {
-    var state = btnOpenCamera.getAttribute('data-state');
+    let state = btnOpenCamera.getAttribute('data-state');
     if (state === 'opened') {
         subject.next(`${(acceptinguser) ? acceptinguser.connectionId : ''}|${getVideoFrame()}`);
         hubConnection.stream("DownloadStream", 500)

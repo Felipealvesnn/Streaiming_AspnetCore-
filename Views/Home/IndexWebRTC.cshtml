@@ -1,24 +1,39 @@
 ﻿
 
 <div class="row">
-    <div class="col-12">
+    <div class="col-12 card card-body">
+        <div class="d-flex mx-auto">Seu Id:&nbsp;<p id="IdUser"></p></div>
         <ul id="usersdata" class="list-group">
             <li class="list-group-item">Usuarios Online</li>
             <li class="list-group-item user" data-cid="" data-username="">
-                <a href="#">
+               @* <a href="#">
                     <div class="username"></div>
-                </a>
+                </a>*@
             </li>
         </ul>
+        <div class="row g-3 align-items-center mx-auto mt-2">
+            <div class="col-auto">
+                <label for="inputPassword6" class="col-form-label">Digite o Id da pessoa pra ligar</label>
+            </div>
+            <div class="col-auto">
+                <input type="text" id="inputIdLigar" class="form-control"  aria-describedby="passwordHelpInline">
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary" id="BtnLigar">Ligar</button>
+            </div>
+            
+        </div>
     </div>
 </div>
 <div class="row">
     <div class="col-6">
+        Você
         <div class="card card-body bg-light m-2 h-100">
             <video id="localVideo" playsinline autoplay muted></video>
         </div>
     </div>
     <div class="col-6">
+        Servidor
         <div class="card card-body bg-light m-2 h-100">
             <video id="remoteVideo" playsinline autoplay></video>
         </div>
@@ -90,20 +105,24 @@
                     if (userList[index].username === $("#lblUser").text()) {
 
                     } else {
-                        var onlineUsers = '';
-                        onlineUsers += '<li class="list-group-item user" data-cid=' + userList[index].connectionId + ' data-username=' + userList[index].username + '>';
-                        onlineUsers += '<div class="d-lg-flex flex-row">';
-                        onlineUsers += '<div class="m-1 d-lg-flex justify-content-center align-items-center"><small>' + userList[index].username + '</small></div>';
-
+                      
+        
                         if (userList[index].username !== user) {
+                            var onlineUsers = '';
+                            onlineUsers += '<li class="list-group-item user" data-cid=' + userList[index].connectionId + ' data-username=' + userList[index].username + '>';
+                            onlineUsers += '<div class="d-lg-flex flex-row">';
+                            onlineUsers += '<div class="m-1 d-lg-flex justify-content-center align-items-center"><small>   ' + userList[index].username + '</small></div>';
                             onlineUsers += '<div class="d-flex flex-row justify-content-center align-items-center">';
-                            onlineUsers += '<div class="m-1 d-lg-flex justify-content-center align-items-center"><span data-callstatus=' + userList[index].inCall + '>' + ((userList[index].inCall == true) ? '<small>(Ocupado)</small>' : '<small>(Idle)</small>') + '</span></div>';
+                            onlineUsers += '<div class="m-1 d-lg-flex justify-content-center align-items-center"><span data-callstatus=' + userList[index].inCall + '>' + ((userList[index].inCall == true) ? '<small>(Ocupado)</small>' : '<small>(Disponivel)</small>') + '</span></div>';
                             onlineUsers += '<div class="m-2"><button id="btnCallUser" type="button" class="btn btn-primary btn-sm" ' + ((userList[index].inCall == true) ? 'disabled' : '') + ' onclick="callUser(\'' + userList[index].connectionId + '\')">Ligar</button></div>';
-                            onlineUsers += '<div class="m-2"><button id="btnEndCall" type="button" class="btn btn-primary btn-sm" ' + ((userList[index].inCall == true) ? '' : 'disabled') + 'onclick="endCall(\'' + userList[index].connectionId + '\')">Desligar</button></div>';
+                            onlineUsers += '<div class="m-2"><button id="btnEndCall" type="button" class="btn btn-primary btn-sm" ' + ((userList[index].inCall == true) ? '' : 'disabled') + ' onclick="endCall(\'' + userList[index].connectionId + '\')">Desligar</button></div>';
                             onlineUsers += '</div>';
+
+                            onlineUsers += '</div></li>';
+
+                            $('#usersdata').append(onlineUsers);
                         }
-                        onlineUsers += '</div></li>';
-                        $('#usersdata').append(onlineUsers);
+                      
                     }
                 });
 
@@ -117,7 +136,7 @@
                     }
                 };
                 if (isCaller) {
-                    console.info('Someone is also here...');
+                    console.info('Tem alguem aqui ...');
                     peerConnection.onnegotiationneeded = () => {
                         peerConnection.createOffer()
                             .then((description) => {
@@ -141,16 +160,36 @@
                     }
                 };
 
+             
                 navigator.mediaDevices.getUserMedia({
                     audio: true,
                     video: true,
                 }).then(stream => {
                     // Display your local video in #localVideo element
                     localVideo.srcObject = stream;
-                    // Add your stream to be sent to the conneting peer
-                    stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
-                }, (err) => console.error(err));
+                    // Add your stream to be sent to the connecting peer
+                    stream.getTracks().forEach(track => {
+                        try {
+                            peerConnection.addTrack(track, stream);
+                        } catch (error) {
+                            console.error(error);
+                            // Display an error message to the user
+                            alert('There was an error adding the audio and video track. Please try again or contact support.');
+                        }
+                    });
+                }).catch(err => {
+                    console.error(err);
+                    // Display an error message to the user
+                    alert('ACesso a camera e ao microfone é importante, recarregue a pagina, quando contectar!.');
+                });
+                
+
+
+
+
             });
+
+
 
             hubConnection.on('receiveData', (signalingUser, data) => {
                 var message = JSON.parse(data);
@@ -183,6 +222,8 @@
 
             });
 
+
+
             hubConnection.on('ChamadaRecebida', (callingUser) => {
                 console.info('Chamada Recebida de: ' + JSON.stringify(callingUser));
                 caller = callingUser;
@@ -192,7 +233,12 @@
             });
 
 
-
+            $('#BtnLigar').on('click',()=>{
+                
+                callUser()
+            alert('')
+            
+            })
 
 
 

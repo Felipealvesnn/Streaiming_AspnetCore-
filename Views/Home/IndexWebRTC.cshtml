@@ -223,6 +223,11 @@
             });
 
 
+            hubConnection.on('LidacaoNegada', (callingUser) => {
+                console.info('Chamada Recebida de: ' + JSON.stringify(callingUser));
+                alert("nao existe: ", callingUser)
+            });
+
 
             hubConnection.on('ChamadaRecebida', (callingUser) => {
                 console.info('Chamada Recebida de: ' + JSON.stringify(callingUser));
@@ -234,9 +239,27 @@
 
 
             $('#BtnLigar').on('click',()=>{
-                
-              //  callUser()
-            alert('')
+            let id =  $('#inputIdLigar').val()
+
+            if(!id){
+                SweetAlerta.fire({
+                    title: 'Coloque o ID',
+                    text: "Não colocou o id de quem vai ligar",
+                    icon: 'warning',
+                    showCancelButton: false,
+                    confirmButtonText: 'Entendi',
+                    cancelButtonText: 'No, cancel!',
+                    reverseButtons: true
+                })
+
+              }
+              else{
+                    callUser(id)
+                  
+              }
+
+
+            
             
             })
 

@@ -17,6 +17,10 @@ namespace WEbCam_Streaiming_AspnetCore.Controllers
         {
             return View();
         }
+        public IActionResult IndexWebRTC()
+        {
+            return View();
+        }
 
         public IActionResult Privacy()
         {

@@ -1,0 +1,206 @@
+﻿
+
+<div class="row">
+    <div class="col-12">
+        <ul id="usersdata" class="list-group">
+            <li class="list-group-item">Usuarios Online</li>
+            <li class="list-group-item user" data-cid="" data-username="">
+                <a href="#">
+                    <div class="username"></div>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="row">
+    <div class="col-6">
+        <div class="card card-body bg-light m-2 h-100">
+            <video id="localVideo" playsinline autoplay muted></video>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="card card-body bg-light m-2 h-100">
+            <video id="remoteVideo" playsinline autoplay></video>
+        </div>
+    </div>
+
+
+</div>
+
+<div class="modal fade" id="callmodal" tabindex="-1" role="dialog" aria-labelledby="callmodaltitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="callmodaltitle">Olá</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="declineCall()" data-dismiss="modal">Decline</button>
+                <button type="button" class="btn btn-primary" onclick="acceptCall()">Accept</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+    {
+    <script src="~/js/funcoeswebrtc.js"></script>
+
+        <script>
+        'use strict';
+
+        const localVideo = document.getElementById('localVideo');
+        const remoteVideo = document.getElementById('remoteVideo');
+
+        var hubUrl = document.location.origin + '/cnnctn';
+        var hubConnection = new signalR.HubConnectionBuilder()
+            .withUrl(hubUrl, signalR.HttpTransportType.WebSockets)
+            .configureLogging(signalR.LogLevel.None)
+            .build();
+
+        var peerConnection;
+        var configuration = { "iceServers": [{ "url": "stun:stun.l.google.com:19302" }] };
+        var users = [];
+        var user = null;
+        var caller = null;
+
+        $(document).ready(function () {
+
+
+
+            hubConnection.start().then(() => {
+                user = generateId();
+                userJoin(user);
+                console.info(`Connected as ${user}`);
+
+            }).catch(err => console.error(err));
+
+            hubConnection.on('AttUsuariosOnline', (userList) => {
+                console.info('Check online users...' + JSON.stringify(userList));
+                users = userList;
+
+                $('#usersdata li.user').remove();
+
+                $.each(userList, function (index) {
+                    var userIcon = '', status = '';
+                    if (userList[index].username === $("#lblUser").text()) {
+
+                    } else {
+                        var onlineUsers = '';
+                        onlineUsers += '<li class="list-group-item user" data-cid=' + userList[index].connectionId + ' data-username=' + userList[index].username + '>';
+                        onlineUsers += '<div class="d-lg-flex flex-row">';
+                        onlineUsers += '<div class="m-1 d-lg-flex justify-content-center align-items-center"><small>' + userList[index].username + '</small></div>';
+
+                        if (userList[index].username !== user) {
+                            onlineUsers += '<div class="d-flex flex-row justify-content-center align-items-center">';
+                            onlineUsers += '<div class="m-1 d-lg-flex justify-content-center align-items-center"><span data-callstatus=' + userList[index].inCall + '>' + ((userList[index].inCall == true) ? '<small>(Ocupado)</small>' : '<small>(Idle)</small>') + '</span></div>';
+                            onlineUsers += '<div class="m-2"><button id="btnCallUser" type="button" class="btn btn-primary btn-sm" ' + ((userList[index].inCall == true) ? 'disabled' : '') + ' onclick="callUser(\'' + userList[index].connectionId + '\')">Ligar</button></div>';
+                            onlineUsers += '<div class="m-2"><button id="btnEndCall" type="button" class="btn btn-primary btn-sm" ' + ((userList[index].inCall == true) ? '' : 'disabled') + 'onclick="endCall(\'' + userList[index].connectionId + '\')">Desligar</button></div>';
+                            onlineUsers += '</div>';
+                        }
+                        onlineUsers += '</div></li>';
+                        $('#usersdata').append(onlineUsers);
+                    }
+                });
+
+                const isCaller = users.length === 2;
+                peerConnection = new RTCPeerConnection(configuration);
+                peerConnection.onicecandidate = event => {
+                    if (event.candidate) {
+                        var targetUserConnectionId = users.filter(u => u.username != user);
+                        console.info(`Target user: ${targetUserConnectionId[0].username}`);
+                        hubConnection.invoke('sendData', JSON.stringify({ 'candidate': event.candidate }), targetUserConnectionId[0].connectionId).catch(err => console.error(err));
+                    }
+                };
+                if (isCaller) {
+                    console.info('Someone is also here...');
+                    peerConnection.onnegotiationneeded = () => {
+                        peerConnection.createOffer()
+                            .then((description) => {
+                                peerConnection.setLocalDescription(
+                                    description,
+                                    () => {
+                                        var targetUserConnectionId = users.filter(u => u.username != user);
+                                        hubConnection.invoke('sendData', JSON.stringify({ 'sdp': peerConnection.localDescription }), targetUserConnectionId[0].connectionId).catch(err => console.error(err));
+                                    },
+                                    (err) => console.info(err)
+                                );
+                            })
+                            .catch(err => console.error(err));
+                    }
+                }
+
+                peerConnection.ontrack = event => {
+                    const stream = event.streams[0];
+                    if (!remoteVideo.srcObject || remoteVideo.srcObject.id !== stream.id) {
+                        remoteVideo.srcObject = stream;
+                    }
+                };
+
+                navigator.mediaDevices.getUserMedia({
+                    audio: true,
+                    video: true,
+                }).then(stream => {
+                    // Display your local video in #localVideo element
+                    localVideo.srcObject = stream;
+                    // Add your stream to be sent to the conneting peer
+                    stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
+                }, (err) => console.error(err));
+            });
+
+            hubConnection.on('receiveData', (signalingUser, data) => {
+                var message = JSON.parse(data);
+
+                if (message.sdp) {
+                    peerConnection.setRemoteDescription(new RTCSessionDescription(message.sdp), () => {
+
+                        if (peerConnection.remoteDescription.type === 'offer') {
+                            peerConnection.createAnswer()
+                                .then((description) => {
+                                    peerConnection.setLocalDescription(
+                                        description,
+                                        () => {
+                                            var targetUserConnectionId = users.filter(u => u.username != user);
+                                            hubConnection.invoke('sendData', JSON.stringify({ 'sdp': peerConnection.localDescription }), targetUserConnectionId[0].connectionId)
+                                                .catch(err => console.error(err));
+                                        },
+                                        (err) => console.error(err)
+                                    );
+                                })
+                                .catch(err => console.error(err));
+                        }
+                    }, (err) => console.error(err));
+                } else if (message.candidate) {
+
+                    peerConnection.addIceCandidate(
+                        new RTCIceCandidate(message.candidate), () => { }, (err) => console.error(err)
+                    );
+                }
+
+            });
+
+            hubConnection.on('ChamadaRecebida', (callingUser) => {
+                console.info('Chamada Recebida de: ' + JSON.stringify(callingUser));
+                caller = callingUser;
+                $('#callmodal').attr('data-callinguser', `${callingUser.username}`);
+                $('#callmodal .modal-body').text(`${callingUser.username} Está ligando...`);
+                $('#callmodal').modal('show');
+            });
+
+
+
+
+
+
+        })// final document ready
+
+
+        
+            
+        </script>
+        
+}

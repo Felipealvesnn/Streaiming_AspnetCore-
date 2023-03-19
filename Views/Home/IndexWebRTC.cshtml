@@ -55,7 +55,10 @@
         <textarea class="form-control" id="mensagem" rows="2"></textarea>
     </div>
     <input type="button" disabled class="btn btn-primary" id="send" value="Enviar Mensagem" />
-    <input type="file"  />
+    <form id="file-upload-form">
+        <input type="file" name="pdfFile" />
+        <button type="submit">Enviar</button>
+    </form>
 </div>
 
 <div class="container p-2">
@@ -327,6 +330,31 @@
                     return console.error(err.toString());
                 });
                 event.preventDefault();
+            });
+
+
+
+            document.getElementById("file-upload-form").addEventListener("submit", function (event) {
+                event.preventDefault();
+
+                var formData = new FormData(event.target);
+                var pdfFile = formData.get("pdfFile");
+
+                var reader = new FileReader();
+                reader.onload = function () {
+                    var pdfBase64 = reader.result.split(',')[1]; // remove o prefixo "data:application/pdf;base64,"
+                    hubConnection.invoke("enviararquivo", pdfBase64).catch(function (error) {
+                        console.log(error);
+                    });
+                };
+                reader.readAsDataURL(pdfFile);
+            });
+
+            hubConnection.on("receberarquivo", function (pdfBase64) {
+                var pdfBytes = atob(pdfBase64); // converte de Base64 para bytes
+                var blob = new Blob([pdfBytes], { type: "application/pdf" });
+                var pdfUrl = URL.createObjectURL(blob);
+                window.open(pdfUrl, "_blank");
             });
 
 

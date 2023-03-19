@@ -12,7 +12,15 @@ builder.Services.AddCors(options =>
     options.AddPolicy("CorsPolicy", policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 });
 
-builder.Services.AddSignalR();
+builder.Services.Configure<IISServerOptions>(options =>
+{
+    options.MaxRequestBodySize = 50485760; // 10MB em bytes
+});
+
+builder.Services.AddSignalR(options =>
+{
+    options.MaximumReceiveMessageSize = 502400000; // tamanho máximo em bytes
+});
 
 builder.Services.AddSingleton<List<User>>();
 builder.Services.AddSingleton<List<Connection>>();
@@ -38,7 +46,7 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-app.UseStreamSocket();
+//app.UseStreamSocket();
 
 app.MapControllerRoute(
     name: "default",
@@ -46,11 +54,12 @@ app.MapControllerRoute(
 
 app.UseEndpoints(endpoints =>
 {
-  
-    endpoints.MapHub<Hub>("/cnnctn", options =>
-    {
-        options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.WebSockets;
-    });
+    endpoints.MapHub<Hub>("/cnnctn");
+
+    //endpoints.MapHub<Hub>("/cnnctn", options =>
+    //{
+    //    options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.WebSockets;
+    //});
     
 });
 

@@ -251,5 +251,12 @@ namespace WEbCam_Streaiming_AspnetCore.Hubs
             var matchingCall = _connections.FirstOrDefault(uc => uc.Users.FirstOrDefault(u => u.ConnectionId == connectionId) != null);
             return matchingCall;
         }
+        [HubMethodName("enviararquivo")]
+        public async Task EnviarArquivo(string pdfBase64)
+        {
+            byte[] pdfBytes = Convert.FromBase64String(pdfBase64);
+
+            await Clients.All.receberArquivo(pdfBytes);
+        }
     }
 }

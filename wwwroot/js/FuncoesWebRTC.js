@@ -1,6 +1,5 @@
 
 
-
 const acceptCall = () => {
     var callingUserName = $('#callmodal').attr('data-cid');
     hubConnection.invoke('AnswerCall', true, caller).catch(err => console.error(err));

@@ -1,11 +1,11 @@
 ﻿
 
-<div class="row">
+<div class="row ">
     <div class="col-12 card card-body">
         <div class="d-flex mx-auto">Seu Id:&nbsp;<p id="IdUser"></p></div>
         <ul id="usersdata" class="list-group">
             <li class="list-group-item">Usuarios Online</li>
-            <li class="list-group-item user" data-cid="" data-username="">
+            <li class="list-group-item usuarios" data-cid="" data-username="">
                @* <a href="#">
                     <div class="username"></div>
                 </a>*@
@@ -41,7 +41,10 @@
 
 
 </div>
-
+<div class="main">
+</div>
+<div class="chats_wrapper">
+</div>
 <div class="modal fade" id="callmodal" tabindex="-1" role="dialog" aria-labelledby="callmodaltitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -101,7 +104,7 @@
                 console.info('Check online users...' + JSON.stringify(userList));
                 users = userList;
 
-                $('#usersdata li.user').remove();
+                $('#usersdata li.usuarios').remove();
 
                 $.each(userList, function (index) {
                     var userIcon = '', status = '';
@@ -112,9 +115,9 @@
         
                         if (userList[index].username !== user) {
                             var onlineUsers = '';
-                            onlineUsers += '<li class="list-group-item user" data-cid=' + userList[index].connectionId + ' data-username=' + userList[index].username + '>';
+                            onlineUsers += '<li class="list-group-item usuarios" data-cid=' + userList[index].connectionId + ' data-username=' + userList[index].username + '>';
                             onlineUsers += '<div class="d-lg-flex flex-row">';
-                            onlineUsers += '<div class="m-1 d-lg-flex justify-content-center align-items-center"><small>   ' + userList[index].username + '</small></div>';
+                            onlineUsers += '<div class="m-1 d-lg-flex justify-content-center align-items-center"><small>   ' + userList[index].connectionId + '</small></div>';
                             onlineUsers += '<div class="d-flex flex-row justify-content-center align-items-center">';
                             onlineUsers += '<div class="m-1 d-lg-flex justify-content-center align-items-center"><span data-callstatus=' + userList[index].inCall + '>' + ((userList[index].inCall == true) ? '<small>(Ocupado)</small>' : '<small>(Disponivel)</small>') + '</span></div>';
                             onlineUsers += '<div class="m-2"><button id="btnCallUser" type="button" class="btn btn-primary btn-sm" ' + ((userList[index].inCall == true) ? 'disabled' : '') + ' onclick="callUser(\'' + userList[index].connectionId + '\')">Ligar</button></div>';
@@ -177,13 +180,13 @@
                         } catch (error) {
                             console.error(error);
                             // Display an error message to the user
-                            alert('There was an error adding the audio and video track. Please try again or contact support.');
+                            //alert('There was an error adding the audio and video track. Please try again or contact support.');
                         }
                     });
                 }).catch(err => {
                     console.error(err);
                     // Display an error message to the user
-                    alert('ACesso a camera e ao microfone é importante, recarregue a pagina, quando contectar!.');
+                    //alert('ACesso a camera e ao microfone é importante, recarregue a pagina, quando contectar!.');
                 });
                 
 
@@ -227,8 +230,8 @@
 
 
             hubConnection.on('LidacaoNegada', (callingUser) => {
-                console.info('Chamada Recebida de: ' + JSON.stringify(callingUser));
-                alert("nao existe: ", callingUser)
+                console.info('Ligação negada: ' + JSON.stringify(callingUser));
+                alert("Ligação negada: ", callingUser)
             });
 
 
@@ -238,6 +241,14 @@
                 $('#callmodal').attr('data-callinguser', `${callingUser.username}`);
                 $('#callmodal .modal-body').text(`${callingUser.username} Está ligando...`);
                 $('#callmodal').modal('show');
+            });
+
+       
+
+            hubConnection.on('LigaCaoAceita', (acceptingUser) => {
+                console.info('Ligação aceita ' + JSON.stringify(acceptingUser) + '.');
+
+              
             });
 
 

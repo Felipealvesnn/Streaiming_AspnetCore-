@@ -53,7 +53,7 @@ namespace WEbCam_Streaiming_AspnetCore.Hubs
             // Check connection
             if (GetConnection(targetUser.ConnectionId) != null)
             {
-                await Clients.Caller.LigacaoDesligada(targetConnectionId, string.Format("{0} is already in a call.", targetUser.Username));
+                await Clients.Caller.LidacaoNegada(targetConnectionId, string.Format("{0} is already in a call.", targetUser.Username));
                 return;
             }
 
@@ -112,7 +112,7 @@ namespace WEbCam_Streaiming_AspnetCore.Hubs
                 Users = new List<User> { callingUser, targetUser }
             });
 
-            await Clients.Client(targetConnectionId.ConnectionId).LigaCaoAceita(callingUser);
+            await Clients.Client(targetConnectionId.ConnectionId).LigaCaoAceita(targetUser);
 
             await UpdateOnlineUsers();
         }

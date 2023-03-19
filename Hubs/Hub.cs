@@ -86,6 +86,7 @@ namespace WEbCam_Streaiming_AspnetCore.Hubs
 
             if (!acceptCall)
             {
+
                 await Clients.Client(targetConnectionId.ConnectionId).LidacaoNegada(callingUser, $"{callingUser.Username} Não pode aceitar a sua ligação.");
                 return;
             }
@@ -164,6 +165,25 @@ namespace WEbCam_Streaiming_AspnetCore.Hubs
             if (userCall != null && userCall.Users.Exists(u => u.ConnectionId == targetUser.ConnectionId))
             {
                 await Clients.Client(targetConnectionId).ReceiveData(callingUser, data);
+            }
+        }
+
+        public async Task SendDataMsg(string data, string targetConnectionId)
+        {
+            var callingUser = _users.SingleOrDefault(u => u.ConnectionId == Context.ConnectionId);
+            var targetUser = _users.SingleOrDefault(u => u.ConnectionId == targetConnectionId);
+
+            if (callingUser == null || targetUser == null)
+            {
+                return;
+            }
+
+
+            //Check the connection 
+            var userCall = GetConnection(callingUser.ConnectionId);
+            if (userCall != null && userCall.Users.Exists(u => u.ConnectionId == targetUser.ConnectionId))
+            {
+                await Clients.Client(targetConnectionId).ReceiveDataMsg(callingUser, data);
             }
         }
 

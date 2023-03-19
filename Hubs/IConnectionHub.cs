@@ -12,5 +12,6 @@ namespace WEbCam_Streaiming_AspnetCore.Hubs
         Task ReceiveData(User signalingUser, string signal);
         Task UploadStream(ChannelReader<string> stream);
         Task LigacaoDesligada(User signalingUser, string signal);
+        Task ReceiveDataMsg(User callingUser, string data);
     }
 }

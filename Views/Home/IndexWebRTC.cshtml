@@ -1,4 +1,11 @@
-﻿
+﻿<style>
+
+    .fixed-size-div {
+        height: 300px;
+        overflow-y: auto;
+    }
+
+</style>
 
 <div class="row ">
     <div class="col-12 card card-body">
@@ -28,23 +35,42 @@
 <div class="row">
     <div class="col-6">
         Você
-        <div class="card card-body bg-light m-2 h-100">
+        <div class="card card-body bg-light m-2 ">
             <video id="localVideo" playsinline autoplay muted></video>
         </div>
     </div>
     <div class="col-6">
         Servidor
-        <div class="card card-body bg-light m-2 h-100">
+        <div class="card card-body bg-light m-2 ">
             <video id="remoteVideo" playsinline autoplay></video>
         </div>
     </div>
 
 
 </div>
-<div class="main">
+
+<div class="container col-6">
+    <div class="form-group">
+        <label for="mensagem">Mensagem</label>
+        <textarea class="form-control" id="mensagem" rows="2"></textarea>
+    </div>
+    <input type="button" class="btn btn-primary" id="send" value="Enviar Mensagem" />
 </div>
-<div class="chats_wrapper">
+
+<div class="container p-2">
+    <div class="row">
+        <div class="col-6 mx-auto">
+            <div class="fixed-size-div">
+                <div class="content">
+                    <ul class="list-group" id="messagesList"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+
+    @*modal de resposta de ligação*@
 <div class="modal fade" id="callmodal" tabindex="-1" role="dialog" aria-labelledby="callmodaltitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -66,7 +92,7 @@
 
 @section Scripts
     {
-    <script src="~/js/funcoeswebrtc.js"></script>
+   
 
         <script>
         'use strict';
@@ -226,15 +252,25 @@
                     );
                 }
 
+              
+
             });
 
+            hubConnection.on('receivedatamsg', (signalingUser, data) => {
+
+                var msg = data.replace(/&/g, "&").replace(/</g, "<").replace(/>/g, ">");
+                var li = $("<li></li>").text("Mensagem q eu recebi: " + msg);
+                li.addClass("list-group-item msgusuario");
+                $("#messagesList").append(li);
+            
+            })
 
             hubConnection.on('LidacaoNegada', (callingUser) => {
                 console.info('Ligação negada: ' + JSON.stringify(callingUser));
                 alert("Ligação negada: ", callingUser)
             });
 
-
+            // onde dispara a ligação recebida e salvo o user na variavel "caller"
             hubConnection.on('ChamadaRecebida', (callingUser) => {
                 console.info('Chamada Recebida de: ' + JSON.stringify(callingUser));
                 caller = callingUser;
@@ -269,13 +305,26 @@
               }
               else{
                     callUser(id)
-                  
               }
 
 
             
             
-            })
+            }) // metodo de ligar pelo butom
+
+            $("#send").on("click", (event) => {
+                
+                var message = $("#mensagem").val();
+                var msg = message.replace(/&/g, "&").replace(/</g, "<").replace(/>/g, ">");
+                var li = $("<li></li>").text("mensagem q eu mandei: " + msg);
+                li.addClass("list-group-item msgusuario");
+                $("#messagesList").append(li);
+
+                hubConnection.invoke("senddatamsg", message, caller.connectionId).catch(function (err) {
+                    return console.error(err.toString());
+                });
+                event.preventDefault();
+            });
 
 
 
@@ -285,5 +334,6 @@
         
             
         </script>
-        
+
+    <script src="~/js/funcoeswebrtc.js"></script>
 }

@@ -22,6 +22,7 @@ const userJoin = (username) => {
 };
 
 const callUser = (connectionId) => {
+    caller = { "connectionId": connectionId }
     hubConnection.invoke('call', { "connectionId": connectionId });
 };
 const endCall = (connectionId) => {

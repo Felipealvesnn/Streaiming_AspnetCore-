@@ -54,7 +54,8 @@
         <label for="mensagem">Mensagem</label>
         <textarea class="form-control" id="mensagem" rows="2"></textarea>
     </div>
-    <input type="button" class="btn btn-primary" id="send" value="Enviar Mensagem" />
+    <input type="button" disabled class="btn btn-primary" id="send" value="Enviar Mensagem" />
+    <input type="file"  />
 </div>
 
 <div class="container p-2">
@@ -71,7 +72,7 @@
 
 
     @*modal de resposta de ligação*@
-<div class="modal fade" id="callmodal" tabindex="-1" role="dialog" aria-labelledby="callmodaltitle" aria-hidden="true">
+<div class="modal fade" id="callmodal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="callmodaltitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -282,6 +283,8 @@
        
 
             hubConnection.on('LigaCaoAceita', (acceptingUser) => {
+                $("#send").prop("disabled", false); // torno o botao able
+                caller = acceptingUser;
                 console.info('Ligação aceita ' + JSON.stringify(acceptingUser) + '.');
 
               

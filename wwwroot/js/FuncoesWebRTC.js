@@ -3,6 +3,7 @@
 const acceptCall = () => {
     var callingUserName = $('#callmodal').attr('data-cid');
     hubConnection.invoke('AnswerCall', true, caller).catch(err => console.error(err));
+    caller = null;
     $('#callmodal').modal('hide');
 
 };
@@ -10,6 +11,7 @@ const acceptCall = () => {
 const declineCall = () => {
     var callingUserName = $('#callmodal').attr('data-cid');
     hubConnection.invoke('AnswerCall', false, caller).catch(err => console.error(err));
+    caller = null;
     $('#callmodal').modal('hide');
 };
 
@@ -22,7 +24,7 @@ const userJoin = (username) => {
 };
 
 const callUser = (connectionId) => {
-    caller = { "connectionId": connectionId }
+   /* caller = { "connectionId": connectionId }*/
     hubConnection.invoke('call', { "connectionId": connectionId });
 };
 const endCall = (connectionId) => {

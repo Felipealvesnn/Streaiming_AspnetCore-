@@ -46,14 +46,14 @@ namespace WEbCam_Streaiming_AspnetCore.Hubs
 
             if (targetUser == null)
             {
-                await Clients.Caller.LidacaoNegada(targetConnectionId, "The user you called has left.");
+                await Clients.Caller.LidacaoNegada(targetConnectionId, "Usuario nao existe.");
                 return;
             }
 
             // Check connection
             if (GetConnection(targetUser.ConnectionId) != null)
             {
-                await Clients.Caller.LidacaoNegada(targetConnectionId, string.Format("{0} is already in a call.", targetUser.Username));
+                await Clients.Caller.LidacaoNegada(targetConnectionId, string.Format("{0} Pessoa ja está em uma ligação.", targetUser.Username));
                 return;
             }
 
@@ -109,7 +109,6 @@ namespace WEbCam_Streaiming_AspnetCore.Hubs
             {
                 Users = new List<User> { callingUser, targetUser }
             });
-            await Clients.Caller.LigaCaoAceita(targetUser);
             await Clients.Client(targetConnectionId.ConnectionId).LigaCaoAceita(callingUser);
 
             await UpdateOnlineUsers();

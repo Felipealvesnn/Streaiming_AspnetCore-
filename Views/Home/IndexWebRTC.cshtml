@@ -13,8 +13,8 @@
         <ul id="usersdata" class="list-group">
             <li class="list-group-item">Usuarios Online</li>
             <li class="list-group-item usuarios" data-cid="" data-username="">
-               @* <a href="#">
-                    <div class="username"></div>
+                @* <a href="#">
+                <div class="username"></div>
                 </a>*@
             </li>
         </ul>
@@ -23,12 +23,12 @@
                 <label for="inputPassword6" class="col-form-label">Digite o Id da pessoa pra ligar</label>
             </div>
             <div class="col-auto">
-                <input type="text" id="inputIdLigar" class="form-control"  aria-describedby="passwordHelpInline">
+                <input type="text" id="inputIdLigar" class="form-control" aria-describedby="passwordHelpInline">
             </div>
             <div class="col-auto">
                 <button type="submit" class="btn btn-primary" id="BtnLigar">Ligar</button>
             </div>
-            
+
         </div>
     </div>
 </div>
@@ -64,7 +64,7 @@
     <div class="row clearfix">
         <div class="col-lg-12">
             <div class="card chat-app">
-             
+
                 <div class="chat fixed-size-div">
                     <div class="chat-header clearfix sticky-top">
                         <div class="row">
@@ -87,32 +87,32 @@
                     </div>
                     <div class="chat-history">
                         <ul class="m-b-0" id="UlConversa">
-                       @*     <li class="clearfix">
-                                <div class="message-data text-right">
-                                    <span class="message-data-time">10:10 AM, Today</span>
-                                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
-                                </div>
-                                <div class="message other-message float-right"> Hi Aiden, how are you? How is the project coming along? </div>
+                            @*     <li class="clearfix">
+                            <div class="message-data text-right">
+                            <span class="message-data-time">10:10 AM, Today</span>
+                            <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
+                            </div>
+                            <div class="message other-message float-right"> Hi Aiden, how are you? How is the project coming along? </div>
                             </li>
                             <li class="clearfix">
-                                <div class="message-data">
-                                    <span class="message-data-time">10:12 AM, Today</span>
-                                </div>
-                                <div class="message my-message">Are we meeting today?</div>
+                            <div class="message-data">
+                            <span class="message-data-time">10:12 AM, Today</span>
+                            </div>
+                            <div class="message my-message">Are we meeting today?</div>
                             </li>*@
-                        
-                          
+
+
                         </ul>
                     </div>
-                    
+
                     <div class="chat-message clearfix ">
                         <div class="sticky-bottom">
-                        <div class="input-group mb-0">
-                            <button class="input-group-prepend" id="ButtomMsg" style="background-color:white; border:none;">
-                                <span class="input-group-text"><i class="fa fa-send"></i></span>
-                            </button>
-                            <input type="text" id="ChatConversa" class="form-control" placeholder="Enter text here...">
-                        </div>
+                            <div class="input-group mb-0">
+                                <button class="input-group-prepend" id="ButtomMsg" style="background-color:white; border:none;">
+                                    <span class="input-group-text"><i class="fa fa-send"></i></span>
+                                </button>
+                                <input type="text" id="ChatConversa" class="form-control" placeholder="Enter text here...">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -123,7 +123,7 @@
 
 
 
-    @*modal de resposta de ligação*@
+@*modal de resposta de ligação*@
 <div class="modal fade" id="callmodal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="callmodaltitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -145,9 +145,9 @@
 
 @section Scripts
     {
-   
 
-        <script>
+
+    <script>
         'use strict';
 
         const localVideo = document.getElementById('localVideo');
@@ -160,21 +160,25 @@
             .build();
 
         var IdConecçao = null
-
-        var peerConnection;
         var configuration = { "iceServers": [{ "url": "stun:stun.l.google.com:19302" }] };
+        var peerConnection = new RTCPeerConnection(configuration) //instancia o webRTC
         var users = [];
         var user = null;
         var caller = null;
 
         $(document).ready(function () {
-
-
+            // digo q se receber video, colocar na div "remoteVideo"
+            peerConnection.ontrack = event => {
+                const stream = event.streams[0];
+                if (!remoteVideo.srcObject || remoteVideo.srcObject.id !== stream.id) {
+                    remoteVideo.srcObject = stream;
+                }
+            };
 
             hubConnection.start().then(() => {
                 user = generateId();
                 userJoin(user);
-                IdConecçao =  hubConnection.connection.connectionId
+                IdConecçao = hubConnection.connection.connectionId
                 console.info(`Connected as ${user}`);
 
             }).catch(err => console.error(err));
@@ -190,8 +194,8 @@
                     if (userList[index].username === $("#lblUser").text()) {
 
                     } else {
-                      
-        
+
+
                         if (userList[index].username !== user) {
                             var onlineUsers = '';
                             onlineUsers += '<li class="list-group-item usuarios" data-cid=' + userList[index].connectionId + ' data-username=' + userList[index].username + '>';
@@ -207,11 +211,11 @@
 
                             $('#usersdata').append(onlineUsers);
                         }
-                      
+
                     }
                 });
 
-        
+
 
             });
 
@@ -246,24 +250,24 @@
                     );
                 }
 
-              
+
 
             });
 
             hubConnection.on('receivedatamsg', (signalingUser, data) => {
 
                 var msg = data.replace(/&/g, "&").replace(/</g, "<").replace(/>/g, ">");
-              
+
                 var li = `<li class="clearfix">
-                                        <div class="message-data">
-                                            <span class="message-data-time">10:15 AM, Today</span>
-                                        </div>
-                                                        <div class="message my-message">${msg}.</div>
-                                    </li>`
+                                                <div class="message-data">
+                                                    <span class="message-data-time">10:15 AM, Today</span>
+                                                </div>
+                                                                <div class="message my-message">${msg}.</div>
+                                            </li>`
 
 
                 $("#UlConversa").append(li);
-            
+
             })
 
             hubConnection.on('LidacaoNegada', (callingUser) => {
@@ -280,60 +284,60 @@
                 $('#callmodal').modal('show');
             });
 
-           
+
 
             hubConnection.on('LigaCaoAceita', (acceptingUser) => {
-                ConectWebRtc(acceptingUser)
+                ligarWebCam();
                 caller = acceptingUser;
                 console.info('Ligação aceita ' + JSON.stringify(acceptingUser) + '.');
 
-              
+
             });
 
             hubConnection.on('LigacaoDesligada', (acceptingUser) => {
 
-              location.reload()
+                location.reload()
 
 
             });
 
 
-            $('#BtnLigar').on('click',()=>{
-            let id =  $('#inputIdLigar').val()
+            $('#BtnLigar').on('click', () => {
+                let id = $('#inputIdLigar').val()
 
-            if(!id){
-                SweetAlerta.fire({
-                    title: 'Coloque o ID',
-                    text: "Não colocou o id de quem vai ligar",
-                    icon: 'warning',
-                    showCancelButton: false,
-                    confirmButtonText: 'Entendi',
-                    cancelButtonText: 'No, cancel!',
-                    reverseButtons: true
-                })
+                if (!id) {
+                    SweetAlerta.fire({
+                        title: 'Coloque o ID',
+                        text: "Não colocou o id de quem vai ligar",
+                        icon: 'warning',
+                        showCancelButton: false,
+                        confirmButtonText: 'Entendi',
+                        cancelButtonText: 'No, cancel!',
+                        reverseButtons: true
+                    })
 
-              }
-              else{
+                }
+                else {
                     callUser(id)
-              }
+                }
 
 
-            
-            
+
+
             }) // metodo de ligar pelo butom
 
             $("#ButtomMsg").on("click", (event) => {
                 var valueMsg = $("#ChatConversa").val();
 
-            
+
                 var mensagem = `   <li class="clearfix">
-                                        <div class="message-data text-right">
-                                            <span class="message-data-time text-right">10:10 AM, Today</span>
-                                            <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
-                                        </div>
-                                                <div class="message other-message float-right"> ${valueMsg} 
+                                                <div class="message-data text-right">
+                                                    <span class="message-data-time text-right">10:10 AM, Today</span>
+                                                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
                                                 </div>
-                                    </li>`
+                                                        <div class="message other-message float-right"> ${valueMsg}
+                                                        </div>
+                                            </li>`
 
 
 
@@ -351,8 +355,8 @@
                 event.preventDefault();
 
                 var formData = new FormData(event.target);
-                var pdfFile = formData.get("pdfFile");       
-            
+                var pdfFile = formData.get("pdfFile");
+
                 const reader = new FileReader();
 
                 reader.onload = (event) => {
@@ -377,9 +381,9 @@
         })// final document ready
 
 
-        
-            
-        </script>
+
+
+    </script>
 
     <script src="~/js/funcoeswebrtc.js"></script>
 }

@@ -46,7 +46,7 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-//app.UseStreamSocket();
+app.UseStreamSocket();
 
 app.MapControllerRoute(
     name: "default",
@@ -54,13 +54,13 @@ app.MapControllerRoute(
 
 app.UseEndpoints(endpoints =>
 {
-    endpoints.MapHub<Hub>("/cnnctn");
+    //endpoints.MapHub<Hub>("/cnnctn");
 
-    //endpoints.MapHub<Hub>("/cnnctn", options =>
-    //{
-    //    options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.WebSockets;
-    //});
-    
+    endpoints.MapHub<Hub>("/cnnctn", options =>
+    {
+        options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.WebSockets;
+    });
+
 });
 
 app.Run();

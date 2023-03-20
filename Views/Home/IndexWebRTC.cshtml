@@ -50,28 +50,14 @@
 </div>
 
 <div class="container col-6">
-    <div class="form-group">
-        <label for="mensagem">Mensagem</label>
-        <textarea class="form-control" id="mensagem" rows="2"></textarea>
-    </div>
-    <input type="button" disabled class="btn btn-primary" id="send" value="Enviar Mensagem" />
+
     <form id="file-upload-form">
         <input type="file" name="pdfFile" />
         <button type="submit">Enviar</button>
     </form>
 </div>
 
-<div class="container p-2">
-    <div class="row">
-        <div class="col-6 mx-auto">
-            <div class="fixed-size-div">
-                <div class="content">
-                    <ul class="list-group" id="messagesList"></ul>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+
 
 
 <div class="container ">
@@ -100,8 +86,8 @@
                         </div>
                     </div>
                     <div class="chat-history">
-                        <ul class="m-b-0">
-                            <li class="clearfix">
+                        <ul class="m-b-0" id="UlConversa">
+                       @*     <li class="clearfix">
                                 <div class="message-data text-right">
                                     <span class="message-data-time">10:10 AM, Today</span>
                                     <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
@@ -113,37 +99,19 @@
                                     <span class="message-data-time">10:12 AM, Today</span>
                                 </div>
                                 <div class="message my-message">Are we meeting today?</div>
-                            </li>
-                            <li class="clearfix">
-                                <div class="message-data">
-                                    <span class="message-data-time">10:15 AM, Today</span>
-                                </div>
-                                <div class="message my-message">Project has been already finished and I have results to show you.</div>
-                            </li>
-                            <li class="clearfix">
-                                <div class="message-data text-right">
-                                    <span class="message-data-time">10:10 AM, Today</span>
-                                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
-                                </div>
-                                <div class="message other-message float-right"> Hi Aiden, how are you? How is the project coming along? </div>
-                            </li>
-                            <li class="clearfix">
-                                <div class="message-data text-right">
-                                    <span class="message-data-time">10:10 AM, Today</span>
-                                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
-                                </div>
-                                <div class="message other-message float-right"> Hi Aiden, how are you? How is the project coming along? </div>
-                            </li>
+                            </li>*@
+                        
+                          
                         </ul>
                     </div>
                     
                     <div class="chat-message clearfix ">
                         <div class="sticky-bottom">
                         <div class="input-group mb-0">
-                            <div class="input-group-prepend">
+                            <button class="input-group-prepend" id="ButtomMsg" style="background-color:white; border:none;">
                                 <span class="input-group-text"><i class="fa fa-send"></i></span>
-                            </div>
-                            <input type="text" class="form-control" placeholder="Enter text here...">
+                            </button>
+                            <input type="text" id="ChatConversa" class="form-control" placeholder="Enter text here...">
                         </div>
                         </div>
                     </div>
@@ -243,66 +211,7 @@
                     }
                 });
 
-                const isCaller = users.length === 2;
-                peerConnection = new RTCPeerConnection(configuration);
-                peerConnection.onicecandidate = event => {
-                    if (event.candidate) {
-                        var targetUserConnectionId = users.filter(u => u.username != user);
-                        console.info(`Target user: ${targetUserConnectionId[0].username}`);
-                        hubConnection.invoke('sendData', JSON.stringify({ 'candidate': event.candidate }), targetUserConnectionId[0].connectionId).catch(err => console.error(err));
-                    }
-                };
-                if (isCaller) {
-                    console.info('Tem alguem aqui ...');
-                    peerConnection.onnegotiationneeded = () => {
-                        peerConnection.createOffer()
-                            .then((description) => {
-                                peerConnection.setLocalDescription(
-                                    description,
-                                    () => {
-                                        var targetUserConnectionId = users.filter(u => u.username != user);
-                                        hubConnection.invoke('sendData', JSON.stringify({ 'sdp': peerConnection.localDescription }), targetUserConnectionId[0].connectionId).catch(err => console.error(err));
-                                    },
-                                    (err) => console.info(err)
-                                );
-                            })
-                            .catch(err => console.error(err));
-                    }
-                }
-
-                peerConnection.ontrack = event => {
-                    const stream = event.streams[0];
-                    if (!remoteVideo.srcObject || remoteVideo.srcObject.id !== stream.id) {
-                        remoteVideo.srcObject = stream;
-                    }
-                };
-
-             
-                navigator.mediaDevices.getUserMedia({
-                    audio: true,
-                    video: true,
-                }).then(stream => {
-                    // Display your local video in #localVideo element
-                    localVideo.srcObject = stream;
-                    // Add your stream to be sent to the connecting peer
-                    stream.getTracks().forEach(track => {
-                        try {
-                            peerConnection.addTrack(track, stream);
-                        } catch (error) {
-                            console.error(error);
-                            // Display an error message to the user
-                            //alert('There was an error adding the audio and video track. Please try again or contact support.');
-                        }
-                    });
-                }).catch(err => {
-                    console.error(err);
-                    // Display an error message to the user
-                    //alert('ACesso a camera e ao microfone é importante, recarregue a pagina, quando contectar!.');
-                });
-                
-
-
-
+        
 
             });
 
@@ -344,9 +253,16 @@
             hubConnection.on('receivedatamsg', (signalingUser, data) => {
 
                 var msg = data.replace(/&/g, "&").replace(/</g, "<").replace(/>/g, ">");
-                var li = $("<li></li>").text("Mensagem q eu recebi: " + msg);
-                li.addClass("list-group-item msgusuario");
-                $("#messagesList").append(li);
+              
+                var li = `<li class="clearfix">
+                                        <div class="message-data">
+                                            <span class="message-data-time">10:15 AM, Today</span>
+                                        </div>
+                                                        <div class="message my-message">${msg}.</div>
+                                    </li>`
+
+
+                $("#UlConversa").append(li);
             
             })
 
@@ -364,14 +280,21 @@
                 $('#callmodal').modal('show');
             });
 
-       
+           
 
             hubConnection.on('LigaCaoAceita', (acceptingUser) => {
-                $("#send").prop("disabled", false); // torno o botao able
+                ConectWebRtc(acceptingUser)
                 caller = acceptingUser;
                 console.info('Ligação aceita ' + JSON.stringify(acceptingUser) + '.');
 
               
+            });
+
+            hubConnection.on('LigacaoDesligada', (acceptingUser) => {
+
+              location.reload()
+
+
             });
 
 
@@ -399,15 +322,24 @@
             
             }) // metodo de ligar pelo butom
 
-            $("#send").on("click", (event) => {
-                
-                var message = $("#mensagem").val();
-                var msg = message.replace(/&/g, "&").replace(/</g, "<").replace(/>/g, ">");
-                var li = $("<li></li>").text("mensagem q eu mandei: " + msg);
-                li.addClass("list-group-item msgusuario");
-                $("#messagesList").append(li);
+            $("#ButtomMsg").on("click", (event) => {
+                var valueMsg = $("#ChatConversa").val();
 
-                hubConnection.invoke("senddatamsg", message, caller.connectionId).catch(function (err) {
+            
+                var mensagem = `   <li class="clearfix">
+                                        <div class="message-data text-right">
+                                            <span class="message-data-time text-right">10:10 AM, Today</span>
+                                            <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
+                                        </div>
+                                                <div class="message other-message float-right"> ${valueMsg} 
+                                                </div>
+                                    </li>`
+
+
+
+                $("#UlConversa").append(mensagem);
+
+                hubConnection.invoke("senddatamsg", valueMsg, caller.connectionId).catch(function (err) {
                     return console.error(err.toString());
                 });
                 event.preventDefault();

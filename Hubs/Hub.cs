@@ -73,10 +73,7 @@ namespace WEbCam_Streaiming_AspnetCore.Hubs
             var targetUser = _users.SingleOrDefault(u => u.ConnectionId == targetConnectionId.ConnectionId);
 
 
-            if (callingUser == null)
-            {
-                return;
-            }
+           
 
             if (targetUser == null)
             {
@@ -134,6 +131,7 @@ namespace WEbCam_Streaiming_AspnetCore.Hubs
             {
                 foreach (var user in currentCall.Users.Where(u => u.ConnectionId != callingUser.ConnectionId))
                 {
+                    await Clients.Caller.LigacaoDesligada(callingUser, $"{callingUser.Username} Desligando ai machoo");
                     await Clients.Client(user.ConnectionId).LigacaoDesligada(callingUser, $"{callingUser.Username} has hung up.");
                 }
 

@@ -10,7 +10,7 @@ Sistema em Aspnet core/mvc de uma video chamda
 
 - `WebRTC`
 
-<img src="./LancheMVC/wwwroot/images/ligação.png">
+<img src="./WEbCam_Streaiming_AspnetCore/wwwroot/images/ligação.png">
 
 
 ## Ainda em desenvolvimento

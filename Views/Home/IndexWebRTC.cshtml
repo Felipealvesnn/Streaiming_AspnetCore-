@@ -233,8 +233,8 @@
                                     peerConnection.setLocalDescription(
                                         description,
                                         () => {
-                                            var targetUserConnectionId = users.filter(u => u.username != user);
-                                            hubConnection.invoke('sendData', JSON.stringify({ 'sdp': peerConnection.localDescription }), targetUserConnectionId[0].connectionId)
+                                            var targetUserConnectionId = signalingUser;
+                                            hubConnection.invoke('sendData', JSON.stringify({ 'sdp': peerConnection.localDescription }), targetUserConnectionId.connectionId)
                                                 .catch(err => console.error(err));
                                         },
                                         (err) => console.error(err)

@@ -252,11 +252,14 @@ namespace WEbCam_Streaiming_AspnetCore.Hubs
             return matchingCall;
         }
         [HubMethodName("enviararquivo")]
-        public async Task EnviarArquivo(string pdfBase64)
+        public async Task EnviarArquivo(byte[] pdfBytes, string nomeArquivo)
         {
-            byte[] pdfBytes = Convert.FromBase64String(pdfBase64);
+            string caminhoArquivo = Path.Combine(Path.GetTempPath(), nomeArquivo);
+            await File.WriteAllBytesAsync(caminhoArquivo, pdfBytes);
 
-            await Clients.All.receberArquivo(pdfBytes);
+            var arquivo = new { Nome = nomeArquivo, Dados = pdfBytes };
+
+            await Clients.All.receberArquivo(arquivo);
         }
     }
 }

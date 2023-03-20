@@ -13,7 +13,6 @@ namespace WEbCam_Streaiming_AspnetCore.Hubs
         Task UploadStream(ChannelReader<string> stream);
         Task LigacaoDesligada(User signalingUser, string signal);
         Task ReceiveDataMsg(User callingUser, string data);
-      
-        Task receberArquivo(byte[] pdfBytes);
+        Task receberArquivo(object arquivo);
     }
 }

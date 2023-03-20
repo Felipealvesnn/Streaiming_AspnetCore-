@@ -136,6 +136,7 @@
                             </li>
                         </ul>
                     </div>
+                    
                     <div class="chat-message clearfix ">
                         <div class="sticky-bottom">
                         <div class="input-group mb-0">
@@ -187,7 +188,7 @@
         var hubUrl = document.location.origin + '/cnnctn';
         var hubConnection = new signalR.HubConnectionBuilder()
             .withUrl(hubUrl, signalR.HttpTransportType.WebSockets)
-            .configureLogging(signalR.LogLevel.None)
+            .configureLogging(signalR.LogLevel.Debug)
             .build();
 
         var IdConecçao = null
@@ -418,16 +419,18 @@
                 event.preventDefault();
 
                 var formData = new FormData(event.target);
-                var pdfFile = formData.get("pdfFile");
+                var pdfFile = formData.get("pdfFile");       
+            
+                const reader = new FileReader();
 
-                var reader = new FileReader();
-                reader.onload = function () {
-                    var pdfBase64 = reader.result.split(',')[1]; // remove o prefixo "data:application/pdf;base64,"
-                    hubConnection.invoke("enviararquivo", pdfBase64).catch(function (error) {
+                reader.onload = (event) => {
+                    const pdfBytes = new Uint8Array(event.target.result);
+                    hubConnection.invoke("enviararquivo", pdfBytes, "nome do arquivo").catch(function (error) {
                         console.log(error);
                     });
                 };
-                reader.readAsDataURL(pdfFile);
+
+                reader.readAsArrayBuffer(pdfFile);
             });
 
             hubConnection.on("receberarquivo", function (pdfBase64) {

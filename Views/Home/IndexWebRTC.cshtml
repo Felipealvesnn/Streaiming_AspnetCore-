@@ -168,6 +168,7 @@
 
         $(document).ready(function () {
             $('#divChat').hide()
+            
             // digo q se receber video, colocar na div "remoteVideo"
             peerConnection.ontrack = event => {
                 const stream = event.streams[0];
@@ -275,9 +276,9 @@
 
             })
 
-            hubConnection.on('LidacaoNegada', (callingUser) => {
+            hubConnection.on('LidacaoNegada', (callingUser, msg) => {
                 console.info('Ligação negada: ' + JSON.stringify(callingUser));
-                alert("Ligação negada: ", callingUser)
+                alert("Ligação negada: "+ msg)
             });
 
             // onde dispara a ligação recebida e salvo o user na variavel "caller"

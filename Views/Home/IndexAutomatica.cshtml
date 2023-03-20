@@ -60,8 +60,8 @@
 
 
 
-<div class="container " id="divChat">
-    <div class="row clearfix " >
+<div class="container ">
+    <div class="row clearfix">
         <div class="col-lg-12">
             <div class="card chat-app">
 
@@ -167,7 +167,6 @@
         var caller = null;
 
         $(document).ready(function () {
-            $('#divChat').hide()
             // digo q se receber video, colocar na div "remoteVideo"
             peerConnection.ontrack = event => {
                 const stream = event.streams[0];
@@ -256,19 +255,15 @@
             });
 
             hubConnection.on('receivedatamsg', (signalingUser, data) => {
-                let dataAtual = new Date();
-                let horas = dataAtual.getHours();
-                let minutos = dataAtual.getMinutes();
-
 
                 var msg = data.replace(/&/g, "&").replace(/</g, "<").replace(/>/g, ">");
 
                 var li = `<li class="clearfix">
-                                                <div class="message-data">
-                                                            <span class="message-data-time"> ${horas}:${minutos}, Today</span>
-                                                </div>
-                                                                <div class="message my-message">${msg}.</div>
-                                            </li>`
+                                                        <div class="message-data">
+                                                            <span class="message-data-time">10:15 AM, Today</span>
+                                                        </div>
+                                                                        <div class="message my-message">${msg}.</div>
+                                                    </li>`
 
 
                 $("#UlConversa").append(li);
@@ -292,9 +287,7 @@
 
 
             hubConnection.on('LigaCaoAceita', (acceptingUser) => {
-               
-                $('#divChat').show()
-
+                ligarWebCam();
                 caller = acceptingUser;
                 console.info('Ligação aceita ' + JSON.stringify(acceptingUser) + '.');
 
@@ -335,17 +328,16 @@
 
             $("#ButtomMsg").on("click", (event) => {
                 var valueMsg = $("#ChatConversa").val();
-                var dataAtual = new Date();
-                var horas = dataAtual.getHours();
-                var minutos = dataAtual.getMinutes();
-                var mensagem = `   <li class="clearfix d-flex align-items-end flex-column"  >
-                                                <div class="message-data ">
-                                                    <span class="message-data-time text-right"> ${horas}:${minutos}, Today</span>
-                                                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
-                                                </div>
-                                                        <div class="message other-message float-right"> ${valueMsg}
+
+
+                var mensagem = `   <li class="clearfix">
+                                                        <div class="message-data text-right">
+                                                            <span class="message-data-time text-right">10:10 AM, Today</span>
+                                                            <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
                                                         </div>
-                                            </li>`
+                                                                <div class="message other-message float-right"> ${valueMsg}
+                                                                </div>
+                                                    </li>`
 
 
 

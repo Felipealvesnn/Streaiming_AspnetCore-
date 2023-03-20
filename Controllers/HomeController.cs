@@ -21,7 +21,11 @@ namespace WEbCam_Streaiming_AspnetCore.Controllers
         {
             return View();
         }
-
+        public IActionResult IndexAutomatica()
+        {
+            return View();
+        }
+        
         public IActionResult Privacy()
         {
             return View();

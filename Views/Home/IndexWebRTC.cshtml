@@ -1,7 +1,7 @@
 ﻿<style>
 
     .fixed-size-div {
-        height: 300px;
+        height: 400px;
         overflow-y: auto;
     }
 
@@ -65,7 +65,7 @@
         <div class="col-lg-12">
             <div class="card chat-app">
 
-                <div class="chat fixed-size-div">
+                <div class="chat fixed-size-div" id="DivSubnir">
                     <div class="chat-header clearfix sticky-top">
                         <div class="row">
                             <div class="col-lg-6">
@@ -273,6 +273,7 @@
 
 
                 $("#UlConversa").append(li);
+                scrollToBottom('DivSubnir')
 
             })
 
@@ -351,6 +352,9 @@
 
 
                 $("#UlConversa").append(mensagem);
+                scrollToBottom('DivSubnir')
+                
+               
 
                 hubConnection.invoke("senddatamsg", valueMsg, caller.connectionId).catch(function (err) {
                     return console.error(err.toString());

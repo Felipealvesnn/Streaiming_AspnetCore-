@@ -17,12 +17,12 @@ namespace WEbCam_Streaiming_AspnetCore.Controllers
         {
             return View("IndexWebRTC");
         }
-        public IActionResult IndexWebRTC()
+      
+        public IActionResult IndexAutomatica(string ConectId)
         {
-            return View();
-        }
-        public IActionResult IndexAutomatica()
-        {
+            ViewBag.ConectId = ConectId != null ? ConectId : null; 
+            
+            
             return View();
         }
         

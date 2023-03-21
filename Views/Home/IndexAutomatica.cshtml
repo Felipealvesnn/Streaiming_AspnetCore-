@@ -1,35 +1,16 @@
 ﻿<style>
 
     .fixed-size-div {
-        height: 300px;
+        height: 400px;
         overflow-y: auto;
     }
 
 </style>
 <link href="~/css/chatcss.css" rel="stylesheet" />
 <div class="row ">
-    <div class="col-12 card card-body">
-        <div class="d-flex mx-auto">Seu Id:&nbsp;<p id="IdUser"></p></div>
-        <ul id="usersdata" class="list-group">
-            <li class="list-group-item">Usuarios Online</li>
-            <li class="list-group-item usuarios" data-cid="" data-username="">
-                @* <a href="#">
-                <div class="username"></div>
-                </a>*@
-            </li>
-        </ul>
-        <div class="row g-3 align-items-center mx-auto mt-2">
-            <div class="col-auto">
-                <label for="inputPassword6" class="col-form-label">Digite o Id da pessoa pra ligar</label>
-            </div>
-            <div class="col-auto">
-                <input type="text" id="inputIdLigar" class="form-control" aria-describedby="passwordHelpInline">
-            </div>
-            <div class="col-auto">
-                <button type="submit" class="btn btn-primary" id="BtnLigar">Ligar</button>
-            </div>
-
-        </div>
+    <div class="col-12 card card-body text-center">
+        <div class="d-flex mx-auto card card-body"><strong>Seu Link da Sala:</strong>&nbsp;<p id="IdUser"></p></div>
+       
     </div>
 </div>
 <div class="row">
@@ -60,12 +41,12 @@
 
 
 
-<div class="container ">
-    <div class="row clearfix">
+<div class="container " id="divChat">
+    <div class="row clearfix ">
         <div class="col-lg-12">
             <div class="card chat-app">
 
-                <div class="chat fixed-size-div">
+                <div class="chat fixed-size-div" id="DivSubnir">
                     <div class="chat-header clearfix sticky-top">
                         <div class="row">
                             <div class="col-lg-6">
@@ -152,6 +133,7 @@
 
         const localVideo = document.getElementById('localVideo');
         const remoteVideo = document.getElementById('remoteVideo');
+        const conectParceiro = '@Html.Raw(ViewBag.ConectId)';
 
         var hubUrl = document.location.origin + '/cnnctn';
         var hubConnection = new signalR.HubConnectionBuilder()
@@ -159,7 +141,7 @@
             .configureLogging(signalR.LogLevel.Debug)
             .build();
 
-        var IdConecçao = null
+        var IdConexao = null
         var configuration = { "iceServers": [{ "url": "stun:stun.l.google.com:19302" }] };
         var peerConnection = new RTCPeerConnection(configuration) //instancia o webRTC
         var users = [];
@@ -167,6 +149,8 @@
         var caller = null;
 
         $(document).ready(function () {
+            $('#divChat').hide()
+
             // digo q se receber video, colocar na div "remoteVideo"
             peerConnection.ontrack = event => {
                 const stream = event.streams[0];
@@ -178,48 +162,42 @@
             hubConnection.start().then(() => {
                 user = generateId();
                 userJoin(user);
-                IdConecçao = hubConnection.connection.connectionId
+                IdConexao = hubConnection.connection.connectionId
+                $("#IdUser").text(document.location.origin + "@Url.Action("IndexAutomatica", "Home")?ConectId=" +IdConexao);
                 console.info(`Connected as ${user}`);
 
             }).catch(err => console.error(err));
 
-            hubConnection.on('AttUsuariosOnline', (userList) => {
-                console.info('Check online users...' + JSON.stringify(userList));
-                users = userList;
-
-                $('#usersdata li.usuarios').remove();
-
-                $.each(userList, function (index) {
-                    var userIcon = '', status = '';
-                    if (userList[index].username === $("#lblUser").text()) {
-
-                    } else {
 
 
-                        if (userList[index].username !== user) {
-                            var onlineUsers = '';
-                            onlineUsers += '<li class="list-group-item usuarios" data-cid=' + userList[index].connectionId + ' data-username=' + userList[index].username + '>';
-                            onlineUsers += '<div class="d-lg-flex flex-row">';
-                            onlineUsers += '<div class="m-1 d-lg-flex justify-content-center align-items-center"><small>   ' + userList[index].connectionId + '</small></div>';
-                            onlineUsers += '<div class="d-flex flex-row justify-content-center align-items-center">';
-                            onlineUsers += '<div class="m-1 d-lg-flex justify-content-center align-items-center"><span data-callstatus=' + userList[index].inCall + '>' + ((userList[index].inCall == true) ? '<small>(Ocupado)</small>' : '<small>(Disponivel)</small>') + '</span></div>';
-                            onlineUsers += '<div class="m-2"><button id="btnCallUser" type="button" class="btn btn-primary btn-sm" ' + ((userList[index].inCall == true) ? 'disabled' : '') + ' onclick="callUser(\'' + userList[index].connectionId + '\')">Ligar</button></div>';
-                            onlineUsers += '<div class="m-2"><button id="btnEndCall" type="button" class="btn btn-primary btn-sm" ' + ((userList[index].inCall == true) ? '' : 'disabled') + ' onclick="endCall(\'' + userList[index].connectionId + '\')">Desligar</button></div>';
-                            onlineUsers += '</div>';
+            const EntrarNaSala = setTimeout(function () {
+                  // enviar dados via SignalR
+                if (conectParceiro) {
+                    let conectar = { "connectionId": conectParceiro };
+                    callUser(conectParceiro)
 
-                            onlineUsers += '</div></li>';
+                    $.blockUI({
+                        css: {
+                            border: 'none',
+                            padding: '10px',
+                            backgroundColor: '#000',
+                            '-webkit-border-radius': '10px',
+                            '-moz-border-radius': '10px',
+                            opacity: .5,
+                            color: '#fff'
+                        },
+                        message: '<h1>Espere o Atendente Atender...</h1>',
+                        baseZ: 2000
+                    });
 
-                            $('#usersdata').append(onlineUsers);
-                        }
+                }
+            }, 1000) /
 
-                    }
-                });
+         
+        
+           
 
-
-
-            });
-
-
+      
 
             hubConnection.on('receiveData', (signalingUser, data) => {
                 var message = JSON.parse(data);
@@ -255,24 +233,29 @@
             });
 
             hubConnection.on('receivedatamsg', (signalingUser, data) => {
+                let dataAtual = new Date();
+                let horas = dataAtual.getHours();
+                let minutos = dataAtual.getMinutes();
+
 
                 var msg = data.replace(/&/g, "&").replace(/</g, "<").replace(/>/g, ">");
 
                 var li = `<li class="clearfix">
                                                         <div class="message-data">
-                                                            <span class="message-data-time">10:15 AM, Today</span>
+                                                                    <span class="message-data-time"> ${horas}:${minutos}, Today</span>
                                                         </div>
                                                                         <div class="message my-message">${msg}.</div>
                                                     </li>`
 
 
                 $("#UlConversa").append(li);
+                scrollToBottom('DivSubnir')
 
             })
 
-            hubConnection.on('LidacaoNegada', (callingUser) => {
+            hubConnection.on('LidacaoNegada', (callingUser, msg) => {
                 console.info('Ligação negada: ' + JSON.stringify(callingUser));
-                alert("Ligação negada: ", callingUser)
+                alert("Ligação negada: " + msg)
             });
 
             // onde dispara a ligação recebida e salvo o user na variavel "caller"
@@ -287,8 +270,11 @@
 
 
             hubConnection.on('LigaCaoAceita', (acceptingUser) => {
-                ligarWebCam();
+
+                $('#divChat').show()
+
                 caller = acceptingUser;
+                $.unblockUI();
                 console.info('Ligação aceita ' + JSON.stringify(acceptingUser) + '.');
 
 
@@ -328,11 +314,12 @@
 
             $("#ButtomMsg").on("click", (event) => {
                 var valueMsg = $("#ChatConversa").val();
-
-
-                var mensagem = `   <li class="clearfix">
-                                                        <div class="message-data text-right">
-                                                            <span class="message-data-time text-right">10:10 AM, Today</span>
+                var dataAtual = new Date();
+                var horas = dataAtual.getHours();
+                var minutos = dataAtual.getMinutes();
+                var mensagem = `   <li class="clearfix d-flex align-items-end flex-column"  >
+                                                        <div class="message-data ">
+                                                            <span class="message-data-time text-right"> ${horas}:${minutos}, Today</span>
                                                             <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
                                                         </div>
                                                                 <div class="message other-message float-right"> ${valueMsg}
@@ -342,6 +329,9 @@
 
 
                 $("#UlConversa").append(mensagem);
+                scrollToBottom('DivSubnir')
+
+
 
                 hubConnection.invoke("senddatamsg", valueMsg, caller.connectionId).catch(function (err) {
                     return console.error(err.toString());

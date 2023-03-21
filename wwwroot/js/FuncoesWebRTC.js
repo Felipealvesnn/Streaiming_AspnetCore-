@@ -3,8 +3,8 @@
 const acceptCall = () => {
     var callingUserName = $('#callmodal').attr('data-cid');
     hubConnection.invoke('AnswerCall', true, caller).catch(err => console.error(err));
-    ligarWebCam();
     ConectWebRtc(caller)
+    ligarWebCam();
     caller = null;
     $('#callmodal').modal('hide');
 
@@ -63,15 +63,14 @@ const ligarWebCam = () => {
 const ConectWebRtc = (Caller) =>{
 
 
-
+    //peerConnection.onicecandidate = event => {
+    //    if (event.candidate) {
+    //        var targetUserConnectionId = Caller;
+    //        console.info(`Target user: ${targetUserConnectionId.username}`);
+    //        hubConnection.invoke('sendData', JSON.stringify({ 'candidate': event.candidate }), targetUserConnectionId.connectionId).catch(err => console.error(err));
+    //    }
+    //};
   
-    peerConnection.onicecandidate = event => {
-        if (event.candidate) {
-            var targetUserConnectionId = Caller;
-            console.info(`Target user: ${targetUserConnectionId.username}`);
-            hubConnection.invoke('sendData', JSON.stringify({ 'candidate': event.candidate }), targetUserConnectionId.connectionId).catch(err => console.error(err));
-        }
-    };
    
         console.info('Ligacaoo WebRtc ...');
         peerConnection.onnegotiationneeded = () => {

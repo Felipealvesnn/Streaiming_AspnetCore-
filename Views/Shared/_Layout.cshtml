@@ -23,9 +23,6 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="IndexWebRTC">WebRTC</a>
-                        </li>
                          <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="IndexAutomatica">Index Automatico</a>
                         </li>
@@ -51,11 +48,12 @@
  @*   <script src="~/lib/jquery/dist/jquery.min.js"></script>*@
     <script src="https://code.jquery.com/jquery-3.6.3.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/lib/SignLr/signalr.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  @* //tem q ser o ultimo script*@
+    <script src="~/js/site.js" asp-append-version="true"></script>
     <script>
         const SweetAlerta = Swal.mixin({
             customClass: {

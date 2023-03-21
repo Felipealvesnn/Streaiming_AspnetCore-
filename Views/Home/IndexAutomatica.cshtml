@@ -6,8 +6,12 @@
     }
 
 </style>
+@{
+    Layout = ViewBag.ConectId != null ? "~/Views/Shared/_LayoutSemHeader.cshtml" : "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Minha Página";
+}
 <link href="~/css/chatcss.css" rel="stylesheet" />
-<div class="row ">
+<div class="row " id="DivWithID">
     <div class="col-12 card card-body text-center">
         <div class="d-flex mx-auto card card-body"><strong>Seu Link da Sala:</strong>&nbsp;<p id="IdUser"></p></div>
        
@@ -169,29 +173,19 @@
             }).catch(err => console.error(err));
 
 
+            if (conectParceiro) 
+            {
 
+                $('#DivWithID').hide()
+                BlockUi()
             const EntrarNaSala = setTimeout(function () {
                   // enviar dados via SignalR
-                if (conectParceiro) {
+             
                     let conectar = { "connectionId": conectParceiro };
                     callUser(conectParceiro)
+            }, 1000) 
 
-                    $.blockUI({
-                        css: {
-                            border: 'none',
-                            padding: '10px',
-                            backgroundColor: '#000',
-                            '-webkit-border-radius': '10px',
-                            '-moz-border-radius': '10px',
-                            opacity: .5,
-                            color: '#fff'
-                        },
-                        message: '<h1>Espere o Atendente Atender...</h1>',
-                        baseZ: 2000
-                    });
-
-                }
-            }, 1000) /
+                     }
 
          
         

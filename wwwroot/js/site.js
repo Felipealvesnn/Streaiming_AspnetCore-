@@ -15,3 +15,18 @@ const scrollToBottom = (id) => {
         scrollTop: element.prop("scrollHeight")
     }, 100);
 }
+
+const BlockUi = ()=>
+    $.blockUI({
+    css: {
+        border: 'none',
+        padding: '10px',
+        backgroundColor: '#000',
+        '-webkit-border-radius': '10px',
+        '-moz-border-radius': '10px',
+        opacity: .5,
+        color: '#fff'
+    },
+    message: '<h1>Espere o Atendente Atender...</h1>',
+    baseZ: 2000
+});

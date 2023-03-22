@@ -10,7 +10,26 @@ const acceptCall = () => {
 
 
 };
+const eventosPerl = ()=> {
+    peerConnection.onicecandidate = event => {
 
+        if (event.candidate) {
+
+            var targetUserConnectionId = users.filter(u => u.username != user);
+            console.info(`Target user: ${targetUserConnectionId[0].username}`);
+            setTimeout(() => {
+                hubConnection.invoke('sendData', JSON.stringify({ 'candidate': event.candidate }), targetUserConnectionId[0].connectionId).catch(err => console.error(err));
+            }, 1000);
+        }
+    };
+
+    peerConnection.addEventListener('connectionstatechange', event => {
+        if (peerConnection.connectionState === 'connected') {
+            alert("conectado")
+        }
+    });
+
+}
 const declineCall = () => {
     var callingUserName = $('#callmodal').attr('data-cid');
     hubConnection.invoke('AnswerCall', false, caller).catch(err => console.error(err));

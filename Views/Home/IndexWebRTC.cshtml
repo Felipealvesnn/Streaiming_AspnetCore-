@@ -155,7 +155,7 @@
 
         var hubUrl = document.location.origin + '/cnnctn';
         var hubConnection = new signalR.HubConnectionBuilder()
-            .withUrl(hubUrl, signalR.HttpTransportType.LongPolling)
+            .withUrl(hubUrl, signalR.HttpTransportType.WebSockets)
             .configureLogging(signalR.LogLevel.Debug)
             .build();
 
@@ -163,7 +163,7 @@
 
         var IdConecçao = null
         var configuration = { "iceServers": [{ "url": "stun:stun.l.google.com:19302" }] };
-        var peerConnection = new RTCPeerConnection(configuration) //instancia o webRTC
+        var peerConnection = null // new RTCPeerConnection(configuration) //instancia o webRTC
         var users = [];
         var user = null;
         var caller = null;
@@ -171,27 +171,7 @@
         $(document).ready(function () {
             $('#divChat').hide()
             
-            // digo q se receber video, colocar na div "remoteVideo"
-            peerConnection.ontrack = event => {
-                const stream = event.streams[0];
-                //if (!remoteVideo.srcObject || remoteVideo.srcObject.id !== stream.id) {
-                   
-                //}
-                remoteVideo.srcObject = stream;
-            };
-            peerConnection.onicecandidate = event => {
-                if (event.candidate) {
-                    var targetUserConnectionId = caller;
-                    console.info(`Target user: ${targetUserConnectionId.username}`);
-                    hubConnection.invoke('sendData', JSON.stringify({ 'candidate': event.candidate }), targetUserConnectionId.connectionId).catch(err => console.error(err));
-                }
-            };
-            
-            peerConnection.addEventListener('connectionstatechange', event => {
-                if (peerConnection.connectionState === 'connected') {
-                   alert("Conectado")
-                }
-            });
+         
 
 
           

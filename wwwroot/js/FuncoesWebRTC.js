@@ -78,12 +78,16 @@ const ConectWebRtc = (Caller) =>{
     //        hubConnection.invoke('sendData', JSON.stringify({ 'candidate': event.candidate }), targetUserConnectionId.connectionId).catch(err => console.error(err));
     //    }
     //};
-
-    peerConnection.addEventListener('icecandidate', event => {
+      
+    peerConnection = new RTCPeerConnection(configuration);
+    peerConnection.onicecandidate = event => {
+        alert("chegou aqui");
         if (event.candidate) {
-            alert("ice criado")
+            var targetUserConnectionId = users.filter(u => u.username != user);
+            console.info(`Target user: ${targetUserConnectionId[0].username}`);
+            hubConnection.invoke('sendData', JSON.stringify({ 'candidate': event.candidate }), targetUserConnectionId[0].connectionId).catch(err => console.error(err));
         }
-    });
+    };
    
         console.info('Ligacaoo WebRtc ...');
       

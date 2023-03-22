@@ -163,7 +163,7 @@
 
         var IdConecçao = null
         var configuration = { "iceServers": [{ "url": "stun:stun.l.google.com:19302" }] };
-        var peerConnection = new RTCPeerConnection(configuration) //instancia o webRTC
+        var peerConnection = null //instancia o webRTC
         var users = [];
         var user = null;
         var caller = null;
@@ -173,24 +173,9 @@
             
             // digo q se receber video, colocar na div "remoteVideo"
 
-            ligarWebCam()
+           // ligarWebCam()
          
-            peerConnection.onicecandidate = event => {
-                if (event.candidate) {
-                    var targetUserConnectionId = caller;
-                    console.info(`Target user: ${targetUserConnectionId.username}`);
-                    hubConnection.invoke('sendData', JSON.stringify({ 'candidate': event.candidate }), targetUserConnectionId.connectionId).catch(err => console.error(err));
-                }
-            };
-            
-            peerConnection.addEventListener('connectionstatechange', event => {
-                if (peerConnection.connectionState === 'connected') {
-                   alert("Conectado")
-                   
-                }
-            });
-
-
+         
           
 
             hubConnection.start().then(() => {
@@ -239,14 +224,14 @@
             });
 
 
+            peerConnection = new RTCPeerConnection(configuration)
 
             hubConnection.on('receiveData', (signalingUser, data) => {
                 var message = JSON.parse(data);
              
                 if (message.sdp) {
 
-                       
-                    
+                   
                     peerConnection.setRemoteDescription(new RTCSessionDescription(message.sdp), () => {
                      
                         if (peerConnection.remoteDescription.type === 'offer') {
@@ -267,9 +252,9 @@
                         }
                     }, (err) => console.error(err));
                 } else if (message.candidate) {
-
+                    alert("chegou aqui")
                     peerConnection.addIceCandidate(
-                        new RTCIceCandidate(message.candidate), () => { }, (err) => console.error(err)
+                        new RTCIceCandidate(message.candidate), (index) => {console.log(index) }, (err) => console.error(err)
                     );
                 }
 

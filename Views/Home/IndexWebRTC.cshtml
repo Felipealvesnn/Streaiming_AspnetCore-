@@ -1,152 +1,182 @@
-﻿<style>
-
-    .fixed-size-div {
-        height: 400px;
-        overflow-y: auto;
-    }
-
-</style>
-<link href="~/css/chatcss.css" rel="stylesheet" />
-<div class="row ">
-    <div class="col-12 card card-body">
-        <div class="d-flex mx-auto">Seu Id:&nbsp;<p id="IdUser"></p></div>
-        <ul id="usersdata" class="list-group">
-            <li class="list-group-item">Usuarios Online</li>
-            <li class="list-group-item usuarios" data-cid="" data-username="">
-                @* <a href="#">
-                <div class="username"></div>
-                </a>*@
-            </li>
-        </ul>
-        <div class="row g-3 align-items-center mx-auto mt-2">
-            <div class="col-auto">
-                <label for="inputPassword6" class="col-form-label">Digite o Id da pessoa pra ligar</label>
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>- WEbCam_Streaiming_AspnetCore</title>
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/site.css?v=VnBXHnfkgKsA0ClM_Rti6BLspS1DIgVDjhThhcXQ_X4" />
+    <link rel="stylesheet" href="/WEbCam_Streaiming_AspnetCore.styles.css?v=PDyca0kX8rsJ2gwYxtTC3rOxsKSdjerkOi1UO2HJjK0" />
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+</head>
+<body>
+    <header>
+        <nav b-7lzq30u95c class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div b-7lzq30u95c class="container-fluid">
+                <a class="navbar-brand" href="/">WEbCam_Streaiming_AspnetCore</a>
+                <button b-7lzq30u95c class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span b-7lzq30u95c class="navbar-toggler-icon"></span>
+                </button>
+                <div b-7lzq30u95c class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul b-7lzq30u95c class="navbar-nav flex-grow-1">
+                        <li b-7lzq30u95c class="nav-item">
+                            <a class="nav-link text-dark" href="/">Home</a>
+                        </li>
+                        <li b-7lzq30u95c class="nav-item">
+                            <a class="nav-link text-dark" href="/Home/IndexAutomatica">Index Automatico</a>
+                        </li>
+                        <li b-7lzq30u95c class="nav-item">
+                            <a class="nav-link text-dark" href="/Home/Privacy">Privacy</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-            <div class="col-auto">
-                <input type="text" id="inputIdLigar" class="form-control" aria-describedby="passwordHelpInline">
-            </div>
-            <div class="col-auto">
-                <button type="submit" class="btn btn-primary" id="BtnLigar">Ligar</button>
-            </div>
-
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col-6">
-        Você
-        <div class="card card-body bg-light m-2 ">
-            <video id="localVideo" playsinline autoplay muted></video>
-        </div>
-    </div>
-    <div class="col-6">
-        Servidor
-        <div class="card card-body bg-light m-2 ">
-            <video id="remoteVideo" playsinline autoplay></video>
-        </div>
-    </div>
-
-
-</div>
-
-<div class="container col-6">
-
-    <form id="file-upload-form">
-        <input type="file" name="pdfFile" />
-        <button type="submit">Enviar</button>
-    </form>
-</div>
-
-
-
-
-<div class="container " id="divChat">
-    <div class="row clearfix " >
-        <div class="col-lg-12">
-            <div class="card chat-app">
-
-                <div class="chat fixed-size-div" id="DivSubnir">
-                    <div class="chat-header clearfix sticky-top">
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <a href="javascript:void(0);" data-toggle="modal" data-target="#view_info">
-                                    <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="avatar">
-                                </a>
-                                <div class="chat-about">
-                                    <h6 class="m-b-0">Aiden Chavez</h6>
-                                    <small>Last seen: 2 hours ago</small>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 hidden-sm text-right">
-                                <a href="javascript:void(0);" class="btn btn-outline-secondary"><i class="fa fa-camera"></i></a>
-                                <a href="javascript:void(0);" class="btn btn-outline-primary"><i class="fa fa-image"></i></a>
-                                <a href="javascript:void(0);" class="btn btn-outline-info"><i class="fa fa-cogs"></i></a>
-                                <a href="javascript:void(0);" class="btn btn-outline-warning"><i class="fa fa-question"></i></a>
-                            </div>
+        </nav>
+    </header>
+    <div b-7lzq30u95c class="container">
+        <main b-7lzq30u95c role="main" class="pb-3">
+            <style>
+                .fixed-size-div {
+                    height: 400px;
+                    overflow-y: auto;
+                }
+            </style>
+            <link href="/css/chatcss.css" rel="stylesheet" />
+            <div class="row ">
+                <div class="col-12 card card-body">
+                    <div class="d-flex mx-auto">
+                        Seu Id:&nbsp;<p id="IdUser"></p>
+                    </div>
+                    <ul id="usersdata" class="list-group">
+                        <li class="list-group-item">Usuarios Online</li>
+                        <li class="list-group-item usuarios" data-cid="" data-username=""></li>
+                    </ul>
+                    <div class="row g-3 align-items-center mx-auto mt-2">
+                        <div class="col-auto">
+                            <label for="inputPassword6" class="col-form-label">Digite o Id da pessoa pra ligar</label>
+                        </div>
+                        <div class="col-auto">
+                            <input type="text" id="inputIdLigar" class="form-control" aria-describedby="passwordHelpInline">
+                        </div>
+                        <div class="col-auto">
+                            <button type="submit" class="btn btn-primary" id="BtnLigar">Ligar</button>
                         </div>
                     </div>
-                    <div class="chat-history">
-                        <ul class="m-b-0" id="UlConversa">
-                            @*     <li class="clearfix">
-                            <div class="message-data text-right">
-                            <span class="message-data-time">10:10 AM, Today</span>
-                            <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
-                            </div>
-                            <div class="message other-message float-right"> Hi Aiden, how are you? How is the project coming along? </div>
-                            </li>
-                            <li class="clearfix">
-                            <div class="message-data">
-                            <span class="message-data-time">10:12 AM, Today</span>
-                            </div>
-                            <div class="message my-message">Are we meeting today?</div>
-                            </li>*@
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    Você
 
-
-                        </ul>
+                    <div class="card card-body bg-light m-2 ">
+                        <video id="localVideo" playsinline autoplay muted></video>
                     </div>
+                </div>
+                <div class="col-6">
+                    Servidor
 
-                    <div class="chat-message clearfix ">
-                        <div class="sticky-bottom">
-                            <div class="input-group mb-0">
-                                <button class="input-group-prepend" id="ButtomMsg" style="background-color:white; border:none;">
-                                    <span class="input-group-text"><i class="fa fa-send"></i></span>
-                                </button>
-                                <input type="text" id="ChatConversa" class="form-control" placeholder="Enter text here...">
+                    <div class="card card-body bg-light m-2 ">
+                        <video id="remoteVideo" playsinline autoplay></video>
+                    </div>
+                </div>
+            </div>
+            <div class="container col-6">
+                <form id="file-upload-form">
+                    <input type="file" name="pdfFile" />
+                    <button type="submit">Enviar</button>
+                </form>
+            </div>
+            <div class="container " id="divChat">
+                <div class="row clearfix ">
+                    <div class="col-lg-12">
+                        <div class="card chat-app">
+                            <div class="chat fixed-size-div" id="DivSubnir">
+                                <div class="chat-header clearfix sticky-top">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <a href="javascript:void(0);" data-toggle="modal" data-target="#view_info">
+                                                <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="avatar">
+                                            </a>
+                                            <div class="chat-about">
+                                                <h6 class="m-b-0">Aiden Chavez</h6>
+                                                <small>Last seen: 2 hours ago</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 hidden-sm text-right">
+                                            <a href="javascript:void(0);" class="btn btn-outline-secondary">
+                                                <i class="fa fa-camera"></i>
+                                            </a>
+                                            <a href="javascript:void(0);" class="btn btn-outline-primary">
+                                                <i class="fa fa-image"></i>
+                                            </a>
+                                            <a href="javascript:void(0);" class="btn btn-outline-info">
+                                                <i class="fa fa-cogs"></i>
+                                            </a>
+                                            <a href="javascript:void(0);" class="btn btn-outline-warning">
+                                                <i class="fa fa-question"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="chat-history">
+                                    <ul class="m-b-0" id="UlConversa"></ul>
+                                </div>
+                                <div class="chat-message clearfix ">
+                                    <div class="sticky-bottom">
+                                        <div class="input-group mb-0">
+                                            <button class="input-group-prepend" id="ButtomMsg" style="background-color:white; border:none;">
+                                                <span class="input-group-text">
+                                                    <i class="fa fa-send"></i>
+                                                </span>
+                                            </button>
+                                            <input type="text" id="ChatConversa" class="form-control" placeholder="Enter text here...">
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+            <div class="modal fade" id="callmodal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="callmodaltitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="callmodaltitle">Olá</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body"></div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" onclick="declineCall()" data-dismiss="modal">Decline</button>
+                            <button type="button" class="btn btn-primary" onclick="acceptCall()">Accept</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
-</div>
-
-
-
-@*modal de resposta de ligação*@
-<div class="modal fade" id="callmodal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="callmodaltitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="callmodaltitle">Olá</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="declineCall()" data-dismiss="modal">Decline</button>
-                <button type="button" class="btn btn-primary" onclick="acceptCall()">Accept</button>
-            </div>
+    <footer b-7lzq30u95c class="border-top footer text-muted">
+        <div b-7lzq30u95c class="container">
+            &copy;3/22/2023 10:04:23 PM - WEbCam_Streaiming_AspnetCore - <a href="/Home/Privacy">Privacy</a>
         </div>
-    </div>
-</div>
-
-@section Scripts
-    {
-
-
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.6.3.js"></script>
+    <script src="/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/lib/SignLr/signalr.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/js/site.js?v=EYqbT2e0tpJ2w-phYYvr3tmMwmgj6RSJXZV0IbGnrtw"></script>
+    <script>
+        const SweetAlerta = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: false
+        })
+    </script>
     <script>
         'use strict';
 
@@ -154,27 +184,28 @@
         const remoteVideo = document.getElementById('remoteVideo');
 
         var hubUrl = document.location.origin + '/cnnctn';
-        var hubConnection = new signalR.HubConnectionBuilder()
-            .withUrl(hubUrl, signalR.HttpTransportType.WebSockets)
-            .configureLogging(signalR.LogLevel.Debug)
-            .build();
+        var hubConnection = new signalR.HubConnectionBuilder().withUrl(hubUrl, signalR.HttpTransportType.WebSockets).configureLogging(signalR.LogLevel.Debug).build();
 
-      //  var hubConnection = new signalR.HubConnectionBuilder().withUrl(hubUrl).build();
+        //  var hubConnection = new signalR.HubConnectionBuilder().withUrl(hubUrl).build();
 
         var IdConecçao = null
-        var configuration = { "iceServers": [{ "url": "stun:stun.l.google.com:19302" }] };
-        var peerConnection = null // new RTCPeerConnection(configuration) //instancia o webRTC
+        var configuration = {
+            "iceServers": [{
+                "url": "stun:stun.l.google.com:19302"
+            }]
+        };
+        var peerConnection = null
+        //instancia o webRTC
         var users = [];
         var user = null;
         var caller = null;
 
         $(document).ready(function () {
             $('#divChat').hide()
-            
-         
 
+            // digo q se receber video, colocar na div "remoteVideo"
 
-          
+            // ligarWebCam()
 
             hubConnection.start().then(() => {
                 user = generateId();
@@ -182,7 +213,8 @@
                 IdConecçao = hubConnection.connection.connectionId
                 console.info(`Connected as ${user}`);
 
-            }).catch(err => console.error(err));
+            }
+            ).catch(err => console.error(err));
 
             hubConnection.on('AttUsuariosOnline', (userList) => {
                 console.info('Check online users...' + JSON.stringify(userList));
@@ -191,11 +223,10 @@
                 $('#usersdata li.usuarios').remove();
 
                 $.each(userList, function (index) {
-                    var userIcon = '', status = '';
+                    var userIcon = ''
+                        , status = '';
                     if (userList[index].username === $("#lblUser").text()) {
-
                     } else {
-
 
                         if (userList[index].username !== user) {
                             var onlineUsers = '';
@@ -216,70 +247,128 @@
                     }
                 });
 
+                const isCaller = users.filter(u => u.username == user)
+                //users.length === 2;
+                peerConnection = new RTCPeerConnection(configuration);
+                peerConnection.onicecandidate = event => {
 
+                    if (event.candidate) {
+                        if (peerConnection.remoteDescription != null) {
+                            var targetUserConnectionId = users.filter(u => u.username != user);
+                            console.info(`Target user: ${targetUserConnectionId[0].username}`);
+                            hubConnection.invoke('sendData', JSON.stringify({
+                                'candidate': event.candidate
+                            }), targetUserConnectionId[0].connectionId).catch(err => console.error(err));
+                        }
+                    }
+                }
+                    ;
 
-            });
+                if (isCaller[0].inCall == true) {
+                    console.info('Someone is also here...');
 
+                    peerConnection.onnegotiationneeded = (event) => {
 
+                        peerConnection.createOffer().then((description) => {
+                            peerConnection.setLocalDescription(description, () => {
+                                var targetUserConnectionId = users.filter(u => u.username != user);
+                                hubConnection.invoke('sendData', JSON.stringify({
+                                    'sdp': peerConnection.localDescription
+                                }), targetUserConnectionId[0].connectionId).catch(err => console.error(err));
+                            }
+                                , (err) => console.info(err));
+                        }
+                        ).catch(err => console.error(err))
+
+                    }
+
+                }
+
+                peerConnection.addEventListener('connectionstatechange', event => {
+                    if (peerConnection.connectionState === 'connected') {
+                        alert("conectado")
+                    }
+                }
+                );
+
+                peerConnection.ontrack = event => {
+                    const stream = event.streams[0];
+                    if (!remoteVideo.srcObject || remoteVideo.srcObject.id !== stream.id) {
+                        remoteVideo.srcObject = stream;
+                    }
+                }
+                    ;
+
+                navigator.mediaDevices.getUserMedia({
+                    audio: true,
+                    video: true,
+                }).then(stream => {
+                    // Display your local video in #localVideo element
+                    localVideo.srcObject = stream;
+                    // Add your stream to be sent to the conneting peer
+                    stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
+                }
+                    , (err) => console.error(err));
+
+            }
+            );
 
             hubConnection.on('receiveData', (signalingUser, data) => {
                 var message = JSON.parse(data);
 
                 if (message.sdp) {
+
                     peerConnection.setRemoteDescription(new RTCSessionDescription(message.sdp), () => {
 
                         if (peerConnection.remoteDescription.type === 'offer') {
-                            peerConnection.createAnswer()
-                                .then((description) => {
-                                    peerConnection.setLocalDescription(
-                                        description,
-                                        () => {
-                                            var targetUserConnectionId = signalingUser;
-                                            hubConnection.invoke('sendData', JSON.stringify({ 'sdp': peerConnection.localDescription }), targetUserConnectionId.connectionId)
-                                                .catch(err => console.error(err));
-                                        },
-                                        (err) => console.error(err)
-                                    );
-                                })
-                                .catch(err => console.error(err));
+                            peerConnection.createAnswer().then((description) => {
+                                peerConnection.setLocalDescription(description, () => {
+                                    var targetUserConnectionId = users.filter(u => u.username != user);
+                                    hubConnection.invoke('sendData', JSON.stringify({
+                                        'sdp': peerConnection.localDescription
+                                    }), targetUserConnectionId[0].connectionId).catch(err => console.error(err));
+                                }
+                                    , (err) => console.error(err));
+                            }
+                            ).catch(err => console.error(err));
                         }
-                    }, (err) => console.error(err));
+                    }
+                        , (err) => console.error(err));
+
                 } else if (message.candidate) {
 
-                    peerConnection.addIceCandidate(
-                        new RTCIceCandidate(message.candidate), () => { }, (err) => console.error(err)
-                    );
+                    peerConnection.addIceCandidate(new RTCIceCandidate(message.candidate), () => { }
+                        , (err) => console.error(err));
                 }
 
-
-
-            });
+            }
+            );
 
             hubConnection.on('receivedatamsg', (signalingUser, data) => {
                 let dataAtual = new Date();
                 let horas = dataAtual.getHours();
                 let minutos = dataAtual.getMinutes();
 
-
                 var msg = data.replace(/&/g, "&").replace(/</g, "<").replace(/>/g, ">");
 
                 var li = `<li class="clearfix">
-                                                <div class="message-data">
-                                                            <span class="message-data-time"> ${horas}:${minutos}, Today</span>
-                                                </div>
-                                                                <div class="message my-message">${msg}.</div>
-                                            </li>`
-
+                                                                        <div class="message-data">
+                                                                                    <span class="message-data-time"> ${horas}:${minutos}, Today</span>
+                                                                        </div>
+                                                                                        <div class="message my-message">${msg}.</div>
+                                                                    </li>`
 
                 $("#UlConversa").append(li);
                 scrollToBottom('DivSubnir')
 
-            })
+            }
+            )
 
             hubConnection.on('LidacaoNegada', (callingUser, msg) => {
                 console.info('Ligação negada: ' + JSON.stringify(callingUser));
-                alert("Ligação negada: "+ msg)
-            });
+                alert("Ligação negada: " + msg)
+            }
+            );
 
             // onde dispara a ligação recebida e salvo o user na variavel "caller"
             hubConnection.on('ChamadaRecebida', (callingUser) => {
@@ -288,28 +377,26 @@
                 $('#callmodal').attr('data-callinguser', `${callingUser.username}`);
                 $('#callmodal .modal-body').text(`${callingUser.username} Está ligando...`);
                 $('#callmodal').modal('show');
-            });
-
-
+            }
+            );
 
             hubConnection.on('LigaCaoAceita', (acceptingUser) => {
-               
+
                 $('#divChat').show()
 
                 caller = acceptingUser;
-             
+
                 console.info('Ligação aceita ' + JSON.stringify(acceptingUser) + '.');
 
-
-            });
+            }
+            );
 
             hubConnection.on('LigacaoDesligada', (acceptingUser) => {
 
                 location.reload()
 
-
-            });
-
+            }
+            );
 
             $('#BtnLigar').on('click', () => {
                 let id = $('#inputIdLigar').val()
@@ -325,15 +412,13 @@
                         reverseButtons: true
                     })
 
-                }
-                else {
+                } else {
                     callUser(id)
                 }
 
-
-
-
-            }) // metodo de ligar pelo butom
+            }
+            )
+            // metodo de ligar pelo butom
 
             $("#ButtomMsg").on("click", (event) => {
                 var valueMsg = $("#ChatConversa").val();
@@ -341,28 +426,23 @@
                 var horas = dataAtual.getHours();
                 var minutos = dataAtual.getMinutes();
                 var mensagem = `   <li class="clearfix d-flex align-items-end flex-column"  >
-                                                <div class="message-data ">
-                                                    <span class="message-data-time text-right"> ${horas}:${minutos}, Today</span>
-                                                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
-                                                </div>
-                                                        <div class="message other-message float-right"> ${valueMsg}
-                                                        </div>
-                                            </li>`
-
-
+                                                                        <div class="message-data ">
+                                                                            <span class="message-data-time text-right"> ${horas}:${minutos}, Today</span>
+                                                                            <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
+                                                                        </div>
+                                                                                <div class="message other-message float-right"> ${valueMsg}
+                                                                                </div>
+                                                                    </li>`
 
                 $("#UlConversa").append(mensagem);
                 scrollToBottom('DivSubnir')
-                
-               
 
                 hubConnection.invoke("senddatamsg", valueMsg, caller.connectionId).catch(function (err) {
                     return console.error(err.toString());
                 });
                 event.preventDefault();
-            });
-
-
+            }
+            );
 
             document.getElementById("file-upload-form").addEventListener("submit", function (event) {
                 event.preventDefault();
@@ -377,26 +457,25 @@
                     hubConnection.invoke("enviararquivo", pdfBytes, "nome do arquivo").catch(function (error) {
                         console.log(error);
                     });
-                };
+                }
+                    ;
 
                 reader.readAsArrayBuffer(pdfFile);
             });
 
             hubConnection.on("receberarquivo", function (pdfBase64) {
-                var pdfBytes = atob(pdfBase64); // converte de Base64 para bytes
-                var blob = new Blob([pdfBytes], { type: "application/pdf" });
+                var pdfBytes = atob(pdfBase64);
+                // converte de Base64 para bytes
+                var blob = new Blob([pdfBytes], {
+                    type: "application/pdf"
+                });
                 var pdfUrl = URL.createObjectURL(blob);
                 window.open(pdfUrl, "_blank");
             });
 
-
-
-        })// final document ready
-
-
-
-
+        })
+                    // final document ready
     </script>
-
-    <script src="~/js/funcoeswebrtc.js"></script>
-}
+    <script src="/js/funcoeswebrtc.js"></script>
+</body>
+</html>

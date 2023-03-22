@@ -1,58 +1,15 @@
-
+ï»¿
 
 const acceptCall = () => {
     var callingUserName = $('#callmodal').attr('data-cid');
     hubConnection.invoke('AnswerCall', true, caller).catch(err => console.error(err));
-    ConectWebRtc(caller)
-  
+    //  ConectWebRtc(caller)
+
     caller = null;
     $('#callmodal').modal('hide');
 
 
 };
-
-const eventosPerl = () => {
-    peerConnection.onicecandidate = event => {
-
-        if (event.candidate) {
-
-            var targetUserConnectionId = users.filter(u => u.username != user);
-            console.info(`Target user: ${targetUserConnectionId[0].username}`);
-           
-                hubConnection.invoke('sendData', JSON.stringify({ 'candidate': event.candidate }), targetUserConnectionId[0].connectionId).catch(err => console.error(err));
-         
-        }
-    };
-
-    peerConnection.addEventListener('connectionstatechange', event => {
-        if (peerConnection.connectionState === 'connected') {
-            alert("conectado")
-        }
-    });
-
-    // digo q se receber video, colocar na div "remoteVideo"
-    peerConnection.ontrack = event => {
-        const stream = event.streams[0];
-        //if (!remoteVideo.srcObject || remoteVideo.srcObject.id !== stream.id) {
-
-        //}
-        remoteVideo.srcObject = stream;
-    };
-    peerConnection.onicecandidate = event => {
-        if (event.candidate) {
-            var targetUserConnectionId = caller;
-            console.info(`Target user: ${targetUserConnectionId.username}`);
-            hubConnection.invoke('sendData', JSON.stringify({ 'candidate': event.candidate }), targetUserConnectionId.connectionId).catch(err => console.error(err));
-        }
-    };
-
-    peerConnection.addEventListener('connectionstatechange', event => {
-        if (peerConnection.connectionState === 'connected') {
-            alert("Conectado")
-        }
-    });
-
-}
 
 const declineCall = () => {
     var callingUserName = $('#callmodal').attr('data-cid');
@@ -71,7 +28,7 @@ const userJoin = (username) => {
 
 const callUser = (connectionId) => {
     /* caller = { "connectionId": connectionId }*/
-   
+
     hubConnection.invoke('call', { "connectionId": connectionId });
 };
 const endCall = (connectionId) => {
@@ -79,6 +36,14 @@ const endCall = (connectionId) => {
 };
 
 const ligarWebCam = () => {
+
+    peerConnection.ontrack = event => {
+        const stream = event.streams[0];
+        if (!remoteVideo.srcObject || remoteVideo.srcObject.id !== stream.id) {
+            remoteVideo.srcObject = stream;
+        }
+    };
+
     navigator.mediaDevices.getUserMedia({
         audio: true,
         video: true,
@@ -98,12 +63,17 @@ const ligarWebCam = () => {
     }).catch(err => {
         console.error(err);
         // Display an error message to the user
-        //alert('ACesso a camera e ao microfone é importante, recarregue a pagina, quando contectar!.');
+        //alert('ACesso a camera e ao microfone ï¿½ importante, recarregue a pagina, quando contectar!.');
     });
 
 }
 
-const ConectWebRtc = (Caller) =>{
+const numAleatorio = () => {
+
+    return Math.floor(Math.random() * 5000)
+};
+
+const ConectWebRtc = (Caller) => {
 
 
     //peerConnection.onicecandidate = event => {
@@ -113,28 +83,35 @@ const ConectWebRtc = (Caller) =>{
     //        hubConnection.invoke('sendData', JSON.stringify({ 'candidate': event.candidate }), targetUserConnectionId.connectionId).catch(err => console.error(err));
     //    }
     //};
-    peerConnection =  new RTCPeerConnection(configuration)
-    eventosPerl()
-        console.info('Ligacaoo WebRtc ...');
-      
-            peerConnection.createOffer()
-                .then((description) => {
-                    peerConnection.setLocalDescription(
-                        description,
-                        () => {
-                            var targetUserConnectionId = Caller;
-                            setTimeout(() => {
-                                hubConnection.invoke('sendData', JSON.stringify({ 'sdp': peerConnection.localDescription }), targetUserConnectionId.connectionId).catch(err => console.error(err));
-                            }, 1000);
-                        },
-                        (err) => console.info(err)
-                    );
-                })
-                .catch(err => console.error(err));  
-    
 
-   
- 
+    peerConnection = new RTCPeerConnection(configuration);
+    peerConnection.onicecandidate = event => {
+        alert("chegou aqui");
+        if (event.candidate) {
+            var targetUserConnectionId = users.filter(u => u.username != user);
+            console.info(`Target user: ${targetUserConnectionId[0].username}`);
+            hubConnection.invoke('sendData', JSON.stringify({ 'candidate': event.candidate }), targetUserConnectionId[0].connectionId).catch(err => console.error(err));
+        }
+    };
+
+    console.info('Ligacaoo WebRtc ...');
+
+    peerConnection.createOffer()
+        .then((offer) => {
+            peerConnection.setLocalDescription(offer, () => {
+
+
+                var targetUserConnectionId = Caller;
+                hubConnection.invoke('sendData', JSON.stringify({ 'sdp': offer }), targetUserConnectionId.connectionId).catch(err => console.error(err));
+            },
+                (err) => console.info(err)
+            );
+        })
+        .catch(err => console.error(err));
+
+
+
+
 
 
 }

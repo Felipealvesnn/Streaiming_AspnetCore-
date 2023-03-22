@@ -61,7 +61,7 @@
 
 
 <div class="container " id="divChat">
-    <div class="row clearfix " >
+    <div class="row clearfix ">
         <div class="col-lg-12">
             <div class="card chat-app">
 
@@ -159,7 +159,7 @@
             .configureLogging(signalR.LogLevel.Debug)
             .build();
 
-      //  var hubConnection = new signalR.HubConnectionBuilder().withUrl(hubUrl).build();
+        //  var hubConnection = new signalR.HubConnectionBuilder().withUrl(hubUrl).build();
 
         var IdConecçao = null
         var configuration = { "iceServers": [{ "url": "stun:stun.l.google.com:19302" }] };
@@ -170,20 +170,20 @@
 
         $(document).ready(function () {
             $('#divChat').hide()
-            
+
             // digo q se receber video, colocar na div "remoteVideo"
 
-           // ligarWebCam()
-         
-         
-          
+            // ligarWebCam()
+
+
+
 
             hubConnection.start().then(() => {
                 user = generateId();
                 userJoin(user);
                 IdConecçao = hubConnection.connection.connectionId
                 console.info(`Connected as ${user}`);
-               
+
 
             }).catch(err => console.error(err));
 
@@ -220,29 +220,74 @@
                 });
 
 
+                const isCaller = users.length === 2;
+                peerConnection = new RTCPeerConnection(configuration);
+                peerConnection.onicecandidate = event => {
+                  
+                    if (event.candidate) {
+                      
+                        var targetUserConnectionId = users.filter(u => u.username != user);
+                        console.info(`Target user: ${targetUserConnectionId[0].username}`);
+                        hubConnection.invoke('sendData', JSON.stringify({ 'candidate': event.candidate }), targetUserConnectionId[0].connectionId).catch(err => console.error(err));
+                    }
+                };
+                
+                if (isCaller) {
+                    console.info('Someone is also here...');
+                    peerConnection.onnegotiationneeded = () => {
+                        peerConnection.createOffer()
+                            .then((description) => {
+                                peerConnection.setLocalDescription(
+                                    description,
+                                    () => {
+                                        var targetUserConnectionId = users.filter(u => u.username != user);
+                                        hubConnection.invoke('sendData', JSON.stringify({ 'sdp': peerConnection.localDescription }), targetUserConnectionId[0].connectionId).catch(err => console.error(err));
+                                    },
+                                    (err) => console.info(err)
+                                );
+                            })
+                            .catch(err => console.error(err));
+                    }
+                }
 
+
+
+
+                peerConnection.ontrack = event => {
+                    const stream = event.streams[0];
+                    if (!remoteVideo.srcObject || remoteVideo.srcObject.id !== stream.id) {
+                        remoteVideo.srcObject = stream;
+                    }
+                };
+
+                navigator.mediaDevices.getUserMedia({
+                    audio: true,
+                    video: true,
+                }).then(stream => {
+                    // Display your local video in #localVideo element
+                    localVideo.srcObject = stream;
+                    // Add your stream to be sent to the conneting peer
+                    stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
+                }, (err) => console.error(err));
+
+                
             });
 
 
-            peerConnection = new RTCPeerConnection(configuration)
-
             hubConnection.on('receiveData', (signalingUser, data) => {
                 var message = JSON.parse(data);
-             
-                if (message.sdp) {
 
-                   
+                if (message.sdp) {
                     peerConnection.setRemoteDescription(new RTCSessionDescription(message.sdp), () => {
-                     
+
                         if (peerConnection.remoteDescription.type === 'offer') {
                             peerConnection.createAnswer()
-                                .then((answer) => {
+                                .then((description) => {
                                     peerConnection.setLocalDescription(
-                                        answer,
+                                        description,
                                         () => {
-                                            var local = peerConnection.localDescription
-                                            var targetUserConnectionId = signalingUser;
-                                            hubConnection.invoke('sendData', JSON.stringify({ 'sdp': local }), targetUserConnectionId.connectionId)
+                                            var targetUserConnectionId = users.filter(u => u.username != user);
+                                            hubConnection.invoke('sendData', JSON.stringify({ 'sdp': peerConnection.localDescription }), targetUserConnectionId[0].connectionId)
                                                 .catch(err => console.error(err));
                                         },
                                         (err) => console.error(err)
@@ -252,13 +297,11 @@
                         }
                     }, (err) => console.error(err));
                 } else if (message.candidate) {
-                    alert("chegou aqui")
+
                     peerConnection.addIceCandidate(
-                        new RTCIceCandidate(message.candidate), (index) => {console.log(index) }, (err) => console.error(err)
+                        new RTCIceCandidate(message.candidate), () => { }, (err) => console.error(err)
                     );
                 }
-
-
 
             });
 
@@ -271,11 +314,11 @@
                 var msg = data.replace(/&/g, "&").replace(/</g, "<").replace(/>/g, ">");
 
                 var li = `<li class="clearfix">
-                                                <div class="message-data">
-                                                            <span class="message-data-time"> ${horas}:${minutos}, Today</span>
-                                                </div>
-                                                                <div class="message my-message">${msg}.</div>
-                                            </li>`
+                                                        <div class="message-data">
+                                                                    <span class="message-data-time"> ${horas}:${minutos}, Today</span>
+                                                        </div>
+                                                                        <div class="message my-message">${msg}.</div>
+                                                    </li>`
 
 
                 $("#UlConversa").append(li);
@@ -285,7 +328,7 @@
 
             hubConnection.on('LidacaoNegada', (callingUser, msg) => {
                 console.info('Ligação negada: ' + JSON.stringify(callingUser));
-                alert("Ligação negada: "+ msg)
+                alert("Ligação negada: " + msg)
             });
 
             // onde dispara a ligação recebida e salvo o user na variavel "caller"
@@ -300,11 +343,11 @@
 
 
             hubConnection.on('LigaCaoAceita', (acceptingUser) => {
-               
+
                 $('#divChat').show()
 
                 caller = acceptingUser;
-             
+
                 console.info('Ligação aceita ' + JSON.stringify(acceptingUser) + '.');
 
 
@@ -348,20 +391,20 @@
                 var horas = dataAtual.getHours();
                 var minutos = dataAtual.getMinutes();
                 var mensagem = `   <li class="clearfix d-flex align-items-end flex-column"  >
-                                                <div class="message-data ">
-                                                    <span class="message-data-time text-right"> ${horas}:${minutos}, Today</span>
-                                                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
-                                                </div>
-                                                        <div class="message other-message float-right"> ${valueMsg}
+                                                        <div class="message-data ">
+                                                            <span class="message-data-time text-right"> ${horas}:${minutos}, Today</span>
+                                                            <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
                                                         </div>
-                                            </li>`
+                                                                <div class="message other-message float-right"> ${valueMsg}
+                                                                </div>
+                                                    </li>`
 
 
 
                 $("#UlConversa").append(mensagem);
                 scrollToBottom('DivSubnir')
-                
-               
+
+
 
                 hubConnection.invoke("senddatamsg", valueMsg, caller.connectionId).catch(function (err) {
                     return console.error(err.toString());

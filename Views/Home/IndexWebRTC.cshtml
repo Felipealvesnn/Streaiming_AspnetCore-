@@ -228,11 +228,13 @@
                       
                         var targetUserConnectionId = users.filter(u => u.username != user);
                         console.info(`Target user: ${targetUserConnectionId[0].username}`);
+                        setTimeout(() => {
                         hubConnection.invoke('sendData', JSON.stringify({ 'candidate': event.candidate }), targetUserConnectionId[0].connectionId).catch(err => console.error(err));
-                    }
+                        }, 1000);
+                        }
                 };
-                
-                if (isCaller) {
+
+                if (isCaller[0].inCall == true) {
                     console.info('Someone is also here...');
                     peerConnection.onnegotiationneeded = () => {
                         peerConnection.createOffer()

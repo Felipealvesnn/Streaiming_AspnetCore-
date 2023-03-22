@@ -162,7 +162,8 @@ namespace WEbCam_Streaiming_AspnetCore.Hubs
             var userCall = GetConnection(callingUser.ConnectionId);
             if (userCall != null && userCall.Users.Exists(u => u.ConnectionId == targetUser.ConnectionId))
             {
-                await Clients.Client(targetConnectionId).ReceiveData(callingUser, data);
+                 await Clients.Client(targetUser.ConnectionId).ReceiveData(callingUser, data);
+               // await Clients.Caller.ReceiveData(callingUser, data);
             }
         }
 

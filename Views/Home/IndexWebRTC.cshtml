@@ -155,7 +155,7 @@
 
         var hubUrl = document.location.origin + '/cnnctn';
         var hubConnection = new signalR.HubConnectionBuilder()
-            .withUrl(hubUrl, signalR.HttpTransportType.LongPolling)
+            .withUrl(hubUrl, signalR.HttpTransportType.WebSockets)
             .configureLogging(signalR.LogLevel.Debug)
             .build();
 
@@ -172,13 +172,9 @@
             $('#divChat').hide()
             
             // digo q se receber video, colocar na div "remoteVideo"
-            peerConnection.ontrack = event => {
-                const stream = event.streams[0];
-                //if (!remoteVideo.srcObject || remoteVideo.srcObject.id !== stream.id) {
-                   
-                //}
-                remoteVideo.srcObject = stream;
-            };
+
+            ligarWebCam()
+         
             peerConnection.onicecandidate = event => {
                 if (event.candidate) {
                     var targetUserConnectionId = caller;
@@ -190,6 +186,7 @@
             peerConnection.addEventListener('connectionstatechange', event => {
                 if (peerConnection.connectionState === 'connected') {
                    alert("Conectado")
+                   
                 }
             });
 
@@ -201,6 +198,7 @@
                 userJoin(user);
                 IdConecçao = hubConnection.connection.connectionId
                 console.info(`Connected as ${user}`);
+               
 
             }).catch(err => console.error(err));
 
@@ -244,18 +242,22 @@
 
             hubConnection.on('receiveData', (signalingUser, data) => {
                 var message = JSON.parse(data);
-
+             
                 if (message.sdp) {
-                    peerConnection.setRemoteDescription(new RTCSessionDescription(message.sdp), () => {
 
+                       
+                    
+                    peerConnection.setRemoteDescription(new RTCSessionDescription(message.sdp), () => {
+                     
                         if (peerConnection.remoteDescription.type === 'offer') {
                             peerConnection.createAnswer()
-                                .then((description) => {
+                                .then((answer) => {
                                     peerConnection.setLocalDescription(
-                                        description,
+                                        answer,
                                         () => {
+                                            var local = peerConnection.localDescription
                                             var targetUserConnectionId = signalingUser;
-                                            hubConnection.invoke('sendData', JSON.stringify({ 'sdp': peerConnection.localDescription }), targetUserConnectionId.connectionId)
+                                            hubConnection.invoke('sendData', JSON.stringify({ 'sdp': local }), targetUserConnectionId.connectionId)
                                                 .catch(err => console.error(err));
                                         },
                                         (err) => console.error(err)

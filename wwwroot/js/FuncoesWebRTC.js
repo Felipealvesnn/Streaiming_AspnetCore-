@@ -4,7 +4,7 @@ const acceptCall = () => {
     var callingUserName = $('#callmodal').attr('data-cid');
     hubConnection.invoke('AnswerCall', true, caller).catch(err => console.error(err));
     ConectWebRtc(caller)
-    ligarWebCam();
+ 
     caller = null;
     $('#callmodal').modal('hide');
 
@@ -28,7 +28,7 @@ const userJoin = (username) => {
 
 const callUser = (connectionId) => {
     /* caller = { "connectionId": connectionId }*/
-    ligarWebCam();
+   
     hubConnection.invoke('call', { "connectionId": connectionId });
 };
 const endCall = (connectionId) => {
@@ -36,6 +36,14 @@ const endCall = (connectionId) => {
 };
 
 const ligarWebCam = () => {
+
+    peerConnection.ontrack = event => {
+        const stream = event.streams[0];
+        if (!remoteVideo.srcObject || remoteVideo.srcObject.id !== stream.id) {
+            remoteVideo.srcObject = stream;
+        }
+    }; 
+    
     navigator.mediaDevices.getUserMedia({
         audio: true,
         video: true,
@@ -70,23 +78,28 @@ const ConectWebRtc = (Caller) =>{
     //        hubConnection.invoke('sendData', JSON.stringify({ 'candidate': event.candidate }), targetUserConnectionId.connectionId).catch(err => console.error(err));
     //    }
     //};
-  
+
+    peerConnection.addEventListener('icecandidate', event => {
+        if (event.candidate) {
+            alert("ice criado")
+        }
+    });
    
         console.info('Ligacaoo WebRtc ...');
-        peerConnection.onnegotiationneeded = () => {
+      
             peerConnection.createOffer()
-                .then((description) => {
-                    peerConnection.setLocalDescription(
-                        description,
-                        () => {
+                .then((offer) => {
+                    peerConnection.setLocalDescription(offer, () => {
+                        
+                       
                             var targetUserConnectionId = Caller;
-                            hubConnection.invoke('sendData', JSON.stringify({ 'sdp': peerConnection.localDescription }), targetUserConnectionId.connectionId).catch(err => console.error(err));
+                        hubConnection.invoke('sendData', JSON.stringify({ 'sdp': offer }), targetUserConnectionId.connectionId).catch(err => console.error(err));
                         },
                         (err) => console.info(err)
                     );
                 })
                 .catch(err => console.error(err));  
-    }
+    
 
    
  

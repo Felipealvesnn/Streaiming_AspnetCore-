@@ -3,8 +3,8 @@
 const acceptCall = () => {
     var callingUserName = $('#callmodal').attr('data-cid');
     hubConnection.invoke('AnswerCall', true, caller).catch(err => console.error(err));
-    ligarWebCam();
     ConectWebRtc(caller)
+   // ligarWebCam();
     caller = null;
     $('#callmodal').modal('hide');
 
@@ -28,7 +28,7 @@ const userJoin = (username) => {
 
 const callUser = (connectionId) => {
     /* caller = { "connectionId": connectionId }*/
-    ligarWebCam();
+   // ligarWebCam();
     hubConnection.invoke('call', { "connectionId": connectionId });
 };
 const endCall = (connectionId) => {
@@ -58,10 +58,18 @@ const ligarWebCam = () => {
         //alert('ACesso a camera e ao microfone é importante, recarregue a pagina, quando contectar!.');
     });
 
+    peerConnection.ontrack = event => {
+        const stream = event.streams[0];
+        if (!remoteVideo.srcObject || remoteVideo.srcObject.id !== stream.id) {
+            remoteVideo.srcObject = stream;
+        }
+    };
+
 }
 
-const ConectWebRtc = (Caller) =>{
+const ConectWebRtc = (Caller) => {
 
+    peerConnection = new RTCPeerConnection(configuration)
 
 
   
@@ -72,9 +80,15 @@ const ConectWebRtc = (Caller) =>{
             hubConnection.invoke('sendData', JSON.stringify({ 'candidate': event.candidate }), targetUserConnectionId.connectionId).catch(err => console.error(err));
         }
     };
+
+    peerConnection.addEventListener('connectionstatechange', event => {
+        if (peerConnection.connectionState === 'connected') {
+          alert("Conectado")
+        }
+    });
    
         console.info('Ligacaoo WebRtc ...');
-        peerConnection.onnegotiationneeded = () => {
+       
             peerConnection.createOffer()
                 .then((description) => {
                     peerConnection.setLocalDescription(
@@ -87,7 +101,7 @@ const ConectWebRtc = (Caller) =>{
                     );
                 })
                 .catch(err => console.error(err));  
-    }
+    
 
    
  

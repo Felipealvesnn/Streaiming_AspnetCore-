@@ -220,7 +220,7 @@
                 });
 
 
-                const isCaller = users.length === 2;
+                const isCaller =    users.filter(u => u.username == user)      //users.length === 2;
                 peerConnection = new RTCPeerConnection(configuration);
                 peerConnection.onicecandidate = event => {
                   

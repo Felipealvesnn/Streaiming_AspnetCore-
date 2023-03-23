@@ -68,10 +68,11 @@ const callbackAddStream = (connection, evt) => {
 attachMediaStream = (e) => {
     //console.log(e);
     console.log("OnPage: called attachMediaStream");
-    var partnerAudio = document.querySelector('.audio.partner');
-    if (partnerAudio.srcObject !== e.stream) {
-        partnerAudio.srcObject = e.stream;
-        console.log("OnPage: Attached remote stream");
+   
+
+    const stream = e.stream;
+    if (!remoteVideo.srcObject || remoteVideo.srcObject.id !== stream.id) {
+        remoteVideo.srcObject = stream;
     }
 };
 const callbackIceCandidate = (evt, connection, partnerClientId) => {
@@ -105,10 +106,10 @@ const initializeConnection = (partnerClientId) => {
     //connection.oniceconnectionstatechange = evt => console.log("WebRTC: oniceconnectionstatechange", evt); //triggering on state change 
     //connection.onicegatheringstatechange = evt => console.log("WebRTC: onicegatheringstatechange", evt); //triggering on state change 
     //connection.onsignalingstatechange = evt => console.log("WebRTC: onsignalingstatechange", evt); //triggering on state change 
-    //connection.ontrack = evt => console.log("WebRTC: ontrack", evt);
+    connection.ontrack = evt => console.log("WebRTC: ontrack", evt);
     connection.onicecandidate = evt => callbackIceCandidate(evt, connection, partnerClientId); // ICE Candidate Callback
     //connection.onnegotiationneeded = evt => callbackNegotiationNeeded(connection, evt); // Negotiation Needed Callback
-   // connection.onaddstream = evt => callbackAddStream(connection, evt); // Add stream handler callback
+    connection.onaddstream = evt => callbackAddStream(connection, evt); // Add stream handler callback
 
    
   //  connection.onremovestream = evt => callbackRemoveStream(connection, evt); // Remove stream handler callback

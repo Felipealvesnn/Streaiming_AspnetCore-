@@ -172,7 +172,7 @@
         //  var hubConnection = new signalR.HubConnectionBuilder().withUrl(hubUrl).build();
 
         var IdConecçao = null
-        var configuration = { "iceServers": [{ "url": "stun:stun.l.google.com:19302" }] };
+        var peerConnectionConfig = { "iceServers": [{ "url": "stun:stun.l.google.com:19302" }] };
         var peerConnection = null //instancia o webRTC
         var users = [], SuaStream, connections = {};
         var user = null;
@@ -294,7 +294,7 @@
                 $('#divChat').show()
 
                 caller = acceptingUser;
-                ConectWebRtc(caller, SuaStream)
+                initiateOffer(caller.connectionId, SuaStream)
 
                 console.info('Ligação aceita ' + JSON.stringify(acceptingUser) + '.');
 

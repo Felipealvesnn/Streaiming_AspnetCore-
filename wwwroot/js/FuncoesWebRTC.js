@@ -3,8 +3,7 @@
 const acceptCall = () => {
     var callingUserName = $('#callmodal').attr('data-cid');
     hubConnection.invoke('AnswerCall', true, caller).catch(err => console.error(err));
-  //  ConectWebRtc(caller)
- 
+  
     caller = null;
     $('#callmodal').modal('hide');
 
@@ -56,12 +55,23 @@ const endCall = (connectionId) => {
 
 const ligarWebCam = () => {
 
-    peerConnection.ontrack = event => {
-        const stream = event.streams[0];
-        if (!remoteVideo.srcObject || remoteVideo.srcObject.id !== stream.id) {
-            remoteVideo.srcObject = stream;
-        }
-    }; 
+    //peerConnection.ontrack = event => {
+    //    const stream = event.streams[0];
+    //    if (!remoteVideo.srcObject || remoteVideo.srcObject.id !== stream.id) {
+    //        remoteVideo.srcObject = stream;
+    //    }
+    //}; 
+    //// ,amdar a stream
+    //stream.getTracks().forEach(track => {
+    //    try {
+    //        peerConnection.addTrack(track, stream);
+    //    } catch (error) {
+    //        console.error(error);
+    //        // Display an error message to the user
+    //        //alert('There was an error adding the audio and video track. Please try again or contact support.');
+    //    }
+    //});
+
     
     navigator.mediaDevices.getUserMedia({
         audio: true,
@@ -69,16 +79,8 @@ const ligarWebCam = () => {
     }).then(stream => {
         // Display your local video in #localVideo element
         localVideo.srcObject = stream;
-        // Add your stream to be sent to the connecting peer
-        stream.getTracks().forEach(track => {
-            try {
-                peerConnection.addTrack(track, stream);
-            } catch (error) {
-                console.error(error);
-                // Display an error message to the user
-                //alert('There was an error adding the audio and video track. Please try again or contact support.');
-            }
-        });
+        SuaStream = stream;
+       
     }).catch(err => {
         console.error(err);
         // Display an error message to the user
@@ -87,41 +89,28 @@ const ligarWebCam = () => {
 
 }
 
-const ConectWebRtc = (Caller) =>{
+const ConectWebRtc = (Caller, localStream) =>{
 
 
-    //peerConnection.onicecandidate = event => {
-    //    if (event.candidate) {
-    //        var targetUserConnectionId = Caller;
-    //        console.info(`Target user: ${targetUserConnectionId.username}`);
-    //        hubConnection.invoke('sendData', JSON.stringify({ 'candidate': event.candidate }), targetUserConnectionId.connectionId).catch(err => console.error(err));
-    //    }
-    //};
-      
-    peerConnection = new RTCPeerConnection(configuration);
-    peerConnection.onicecandidate = event => {
-        alert("chegou aqui");
-        if (event.candidate) {
-            var targetUserConnectionId = users.filter(u => u.username != user);
-            console.info(`Target user: ${targetUserConnectionId[0].username}`);
-            hubConnection.invoke('sendData', JSON.stringify({ 'candidate': event.candidate }), targetUserConnectionId[0].connectionId).catch(err => console.error(err));
-        }
-    };
+ 
+    console.log('WebRTC: called initiateoffer: ');
+    var connection = getConnection(partnerClientId); // // get a connection for the given partner
    
-        console.info('Ligacaoo WebRtc ...');
-      
-            peerConnection.createOffer()
-                .then((offer) => {
-                    peerConnection.setLocalDescription(offer, () => {
-                        
-                       
-                            var targetUserConnectionId = Caller;
-                        hubConnection.invoke('sendData', JSON.stringify({ 'sdp': offer }), targetUserConnectionId.connectionId).catch(err => console.error(err));
-                        },
-                        (err) => console.info(err)
-                    );
-                })
-                .catch(err => console.error(err));  
+    console.log("WebRTC: Added local stream");
+
+    connection.createOffer().then(offer => {
+        console.log('WebRTC: created Offer: ');
+        console.log('WebRTC: Description after offer: ', offer);
+        connection.setLocalDescription(offer).then(() => {
+            console.log('WebRTC: set Local Description: ');
+            console.log('connection before sending offer ', connection);
+            setTimeout(() => {
+                sendHubSignal(JSON.stringify({ "sdp": connection.localDescription }), partnerClientId);
+            }, 1000);
+        }).catch(err => console.error('WebRTC: Error while setting local description', err));
+    }).catch(err => console.error('WebRTC: Error while creating offer', err));
+
+  
     
 
    

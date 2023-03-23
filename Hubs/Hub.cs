@@ -109,7 +109,6 @@ namespace WEbCam_Streaiming_AspnetCore.Hubs
             {
                 Users = new List<User> { callingUser, targetUser }
             });
-            await Clients.Caller.LigaCaoAceita(targetConnectionId);
             await Clients.Client(targetConnectionId.ConnectionId).LigaCaoAceita(callingUser);
 
             await UpdateOnlineUsers();

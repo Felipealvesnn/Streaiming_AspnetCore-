@@ -47,12 +47,8 @@ const ligarWebCam = () => {
         // Display your local video in #localVideo element
         localVideo.srcObject = stream;
         SuaStream = stream;
-       
-    }).catch(err => {
-        console.error(err);
-        // Display an error message to the user
-        //alert('ACesso a camera e ao microfone é importante, recarregue a pagina, quando contectar!.');
-    });
+    }, (err) => console.error(err));
+
 
 }
 const callbackRemoveStream = (connection, evt) => {
@@ -61,7 +57,7 @@ const callbackRemoveStream = (connection, evt) => {
    
     remoteVideo.src = '';
 }
-const callbackAddVideo = (connection, evt) => {
+const callbackAddStream = (connection, evt) => {
     console.log('WebRTC: called callbackAddStream');
 
     // Bind the remote stream to the partner window
@@ -72,10 +68,10 @@ const callbackAddVideo = (connection, evt) => {
 attachMediaStream = (e) => {
     //console.log(e);
     console.log("OnPage: called attachMediaStream");
-
-    const stream = e.streams[0];
-    if (!remoteVideo.srcObject || remoteVideo.srcObject.id !== stream.id) {
-        remoteVideo.srcObject = stream;
+    var partnerAudio = document.querySelector('.audio.partner');
+    if (partnerAudio.srcObject !== e.stream) {
+        partnerAudio.srcObject = e.stream;
+        console.log("OnPage: Attached remote stream");
     }
 };
 const callbackIceCandidate = (evt, connection, partnerClientId) => {
@@ -100,6 +96,7 @@ const initializeConnection = (partnerClientId) => {
     connection.addEventListener('connectionstatechange', event => {
         if (connection.connectionState === 'connected') {
             alert("Conectado")
+            
         }
     });
     //connection.iceConnectionState = evt => console.log("WebRTC: iceConnectionState", evt); //not triggering on edge
@@ -111,8 +108,11 @@ const initializeConnection = (partnerClientId) => {
     //connection.ontrack = evt => console.log("WebRTC: ontrack", evt);
     connection.onicecandidate = evt => callbackIceCandidate(evt, connection, partnerClientId); // ICE Candidate Callback
     //connection.onnegotiationneeded = evt => callbackNegotiationNeeded(connection, evt); // Negotiation Needed Callback
-    connection.onaddstream = evt => callbackAddStream(connection, evt); // Add stream handler callback
-    connection.onremovestream = evt => callbackRemoveStream(connection, evt); // Remove stream handler callback
+   // connection.onaddstream = evt => callbackAddStream(connection, evt); // Add stream handler callback
+
+   
+  //  connection.onremovestream = evt => callbackRemoveStream(connection, evt); // Remove stream handler callback
+
 
     connections[partnerClientId] = connection; // Store away the connection based on username
     //console.log(connection);

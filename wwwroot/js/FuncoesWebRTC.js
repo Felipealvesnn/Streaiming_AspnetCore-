@@ -59,6 +59,7 @@ attachMediaStream = (e) => {
     console.log("OnPage: called attachMediaStream");
   
     if (partnerAudio.srcObject !== e.stream) {
+        var tracks = e.stream.getTracks();
         partnerAudio.srcObject = e.stream;
         console.log("OnPage: Attached remote stream");
     }

@@ -382,23 +382,28 @@
 
             }) // metodo de ligar pelo butom
 
-            $("#ButtomMsg").on("click", (event) => {
+            $("#formchjat").on("submit", (event) => {
                 var valueMsg = $("#ChatConversa").val();
                 var dataAtual = new Date();
                 var horas = dataAtual.getHours();
                 var minutos = dataAtual.getMinutes();
-                var mensagem = `   <li class="clearfix d-flex align-items-end flex-column"  >
-                                                        <div class="message-data ">
-                                                            <span class="message-data-time text-right"> ${horas}:${minutos}, Today</span>
-                                                            <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
+                var mensagem = `   <div class="chat-message-right pb-4">
+                                                        <div>
+                                                            <img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="rounded-circle mr-1" alt="Chris Wood" width="40" height="40">
+                                                            <div class="text-muted small text-nowrap mt-2">2:33 am</div>
                                                         </div>
-                                                                <div class="message other-message float-right"> ${valueMsg}
-                                                                </div>
-                                                    </li>`
+                                                        <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
+                                                            <div class="font-weight-bold mb-1">You</div>
+                                                                   ${valueMsg}
+                                                        </div>
+                                                    </div>
+
+
+                                                                    `
 
 
 
-                $("#UlConversa").append(mensagem);
+                $("#Chatmesseger").append(mensagem);
                 scrollToBottom('DivSubnir')
 
 

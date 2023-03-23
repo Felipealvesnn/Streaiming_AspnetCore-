@@ -43,16 +43,32 @@ const callbackUserMediaSuccess = (stream) => {
     }
 };
 
-const initializeUserMedia = () => {
-    //console.log('WebRTC: InitializeUserMedia: ');
-    //navigator.getUserMedia(webrtcConstraints, callbackUserMediaSuccess, errorHandler);
+const initializeUserMedia = async () => {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        // Informe ao usuário que a funcionalidade não é suportada em seu navegador
+        return;
+    }
 
-    navigator.mediaDevices.getUserMedia({
-        audio: true,
-        video: false,
-    }).then(stream => {
-        // Display your local video in #localVideo element
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+            audio: true,
+            video: true,
+        });
         localVideo.srcObject = stream;
         localStream = stream;
-    }, (err) => console.error(err));
+    } catch (err) {
+        // Se o usuário negar o acesso ao dispositivo de áudio/vídeo, mostre uma mensagem de erro adequada
+        console.error('Não foi possível acessar o dispositivo de áudio/vídeo', err);
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({
+                audio: true,
+                video: false,
+            });
+            localVideo.srcObject = stream;
+            localStream = stream;
+        } catch (err) {
+            // Se não for possível acessar o dispositivo de áudio, mostre uma mensagem de erro adequada
+            console.error('Não foi possível acessar o dispositivo de áudio', err);
+        }
+    }
 };

@@ -150,7 +150,7 @@ const receivedSdpSignal = (connection, partnerClientId, sdp) => {
             console.log('WebRTC: remote Description type answer');
         }
     }, errorHandler);
-}
+    partnerAudio}
 
 const receivedCandidateSignal = (connection, partnerClientId, candidate) => {
     //console.log('candidate', candidate);

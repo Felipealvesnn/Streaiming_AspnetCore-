@@ -301,21 +301,27 @@
                 let horas = dataAtual.getHours();
                 let minutos = dataAtual.getMinutes();
 
-
                 var msg = data.replace(/&/g, "&").replace(/</g, "<").replace(/>/g, ">");
 
-                var li = `<li class="clearfix">
-                                                        <div class="message-data">
-                                                                    <span class="message-data-time"> ${horas}:${minutos}, Today</span>
+
+                var msgem = `
+                                                                                    <div class="chat-message-left pb-4">
+                                                            <div>
+                                                                <img src="https://bootdey.com/img/Content/avatar/avatar3.png" class="rounded-circle mr-1" alt="Sharon Lessman" width="40" height="40">
+                                                                <div class="text-muted small text-nowrap mt-2">2:34 am</div>
+                                                            </div>
+                                                            <div class="flex-shrink-1 bg-light rounded py-2 px-3 ml-3">
+                                                                <div class="font-weight-bold mb-1">Sharon Lessman</div>
+                                                                       ${msg}
+                                                            </div>
                                                         </div>
-                                                                        <div class="message my-message">${msg}.</div>
-                                                    </li>`
+                                                                            `
 
-
-                $("#UlConversa").append(li);
+                $("#Chatmesseger").append(msgem);
                 scrollToBottom('DivSubnir')
 
-            })
+            }
+            )
 
             hubConnection.on('LidacaoNegada', (callingUser, msg) => {
                 console.info('Ligação negada: ' + JSON.stringify(callingUser));

@@ -1,39 +1,5 @@
-﻿<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>- WEbCam_Streaiming_AspnetCore</title>
-    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="/css/site.css?v=VnBXHnfkgKsA0ClM_Rti6BLspS1DIgVDjhThhcXQ_X4" />
-    <link rel="stylesheet" href="/WEbCam_Streaiming_AspnetCore.styles.css?v=PDyca0kX8rsJ2gwYxtTC3rOxsKSdjerkOi1UO2HJjK0" />
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
-</head>
-<body>
-    <header>
-        <nav b-7lzq30u95c class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div b-7lzq30u95c class="container-fluid">
-                <a class="navbar-brand" href="/">WEbCam_Streaiming_AspnetCore</a>
-                <button b-7lzq30u95c class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span b-7lzq30u95c class="navbar-toggler-icon"></span>
-                </button>
-                <div b-7lzq30u95c class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul b-7lzq30u95c class="navbar-nav flex-grow-1">
-                        <li b-7lzq30u95c class="nav-item">
-                            <a class="nav-link text-dark" href="/">Home</a>
-                        </li>
-                        <li b-7lzq30u95c class="nav-item">
-                            <a class="nav-link text-dark" href="/Home/IndexAutomatica">Index Automatico</a>
-                        </li>
-                        <li b-7lzq30u95c class="nav-item">
-                            <a class="nav-link text-dark" href="/Home/Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div b-7lzq30u95c class="container">
+﻿
+  
         <main b-7lzq30u95c role="main" class="pb-3">
             <style>
                 .fixed-size-div {
@@ -174,27 +140,8 @@
                 </div>
             </div>
         </main>
-    </div>
-    <footer b-7lzq30u95c class="border-top footer text-muted">
-        <div b-7lzq30u95c class="container">
-            &copy;3/22/2023 10:04:23 PM - WEbCam_Streaiming_AspnetCore - <a href="/Home/Privacy">Privacy</a>
-        </div>
-    </footer>
-    <script src="https://code.jquery.com/jquery-3.6.3.js"></script>
-    <script src="/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/lib/SignLr/signalr.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="/js/site.js?v=EYqbT2e0tpJ2w-phYYvr3tmMwmgj6RSJXZV0IbGnrtw"></script>
-    <script>
-        const SweetAlerta = Swal.mixin({
-            customClass: {
-                confirmButton: 'btn btn-success',
-                cancelButton: 'btn btn-danger'
-            },
-            buttonsStyling: false
-        })
-    </script>
+ 
+ 
     <script>
         'use strict';
 
@@ -265,7 +212,7 @@
                     }
                 });
 
-                const isCaller = users.length === 2;
+                const isCaller = users.filter(u => u.username === user);
                 peerConnection = new RTCPeerConnection(configuration);
                 peerConnection.onicecandidate = event => {
                     if (event.candidate) {
@@ -274,7 +221,7 @@
                         hubConnection.invoke('sendData', JSON.stringify({ 'candidate': event.candidate }), targetUserConnectionId[0].connectionId).catch(err => console.error(err));
                     }
                 };
-                if (isCaller) {
+                if (isCaller[0].inCall==true) {
                     console.info('Someone is also here...');
                     peerConnection.onnegotiationneeded = () => {
                         peerConnection.createOffer()
@@ -283,7 +230,9 @@
                                     description,
                                     () => {
                                         var targetUserConnectionId = users.filter(u => u.username != user);
+                                    setTimeout(() => {
                                         hubConnection.invoke('sendData', JSON.stringify({ 'sdp': peerConnection.localDescription }), targetUserConnectionId[0].connectionId).catch(err => console.error(err));
+                                    }, 1000);
                                     },
                                     (err) => console.info(err)
                                 );
@@ -400,8 +349,10 @@
             );
 
             hubConnection.on('LigacaoDesligada', (acceptingUser) => {
-
-                location.reload()
+                console.log("ligação desligada")
+                $("#Chatmesseger").html('');
+                $('#divChat').hide()
+                //location.reload()
 
             }
             );
@@ -494,5 +445,4 @@
                     // final document ready
     </script>
     <script src="/js/funcoeswebrtc.js"></script>
-</body>
-</html>
+

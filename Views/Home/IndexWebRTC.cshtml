@@ -159,22 +159,22 @@
 
     <script>
         'use strict';
-
-        const localVideo = document.getElementById('localVideo');
-        const remoteVideo = document.getElementById('remoteVideo');
+        var webrtcConstraints = { audio: true, video: false };
+        const otherAudio = document.getElementById('localVideo');
+        const partnerAudio = document.getElementById('remoteVideo');
 
         var hubUrl = document.location.origin + '/cnnctn';
-        var hubConnection = new signalR.HubConnectionBuilder()
+        var wsconn = new signalR.HubConnectionBuilder()
             .withUrl(hubUrl, signalR.HttpTransportType.WebSockets)
             .configureLogging(signalR.LogLevel.Debug)
             .build();
 
-        //  var hubConnection = new signalR.HubConnectionBuilder().withUrl(hubUrl).build();
+        //  varwsconn = new signalR.HubConnectionBuilder().withUrl(hubUrl).build();
 
         var IdConecçao = null
         var peerConnectionConfig = { "iceServers": [{ "url": "stun:stun.l.google.com:19302" }] };
         var peerConnection = null //instancia o webRTC
-        var users = [], SuaStream, connections = {};
+        var users = [], localStream, connections = {};
         var user = null;
         var caller = null;
        
@@ -189,17 +189,17 @@
 
 
 
-            hubConnection.start().then(() => {
+           wsconn.start().then(() => {
                 user = generateId();
                 userJoin(user);
-                ligarWebCam() // ligo a cam
-                IdConecçao = hubConnection.connection.connectionId
+                initializeUserMedia() // ligo a cam
+                IdConecçao =wsconn.connection.connectionId
                 console.info(`Connected as ${user}`);
 
 
             }).catch(err => console.error(err));
 
-            hubConnection.on('AttUsuariosOnline', (userList) => {
+           wsconn.on('AttUsuariosOnline', (userList) => {
                 console.info('Check online users...' + JSON.stringify(userList));
                 users = userList;
 
@@ -241,13 +241,12 @@
             });
 
 
-            hubConnection.on('receiveData', (signalingUser, signal) => {
-
+            wsconn.on('receiveSignal', (signalingUser, signal) => {
+              
                 newSignal(signalingUser.connectionId, signal);
-
             });
 
-            hubConnection.on('receivedatamsg', (signalingUser, data) => {
+           wsconn.on('receivedatamsg', (signalingUser, data) => {
                 let dataAtual = new Date();
                 let horas = dataAtual.getHours();
                 let minutos = dataAtual.getMinutes();
@@ -274,13 +273,13 @@
             }
             )
 
-            hubConnection.on('LidacaoNegada', (callingUser, msg) => {
+           wsconn.on('LidacaoNegada', (callingUser, msg) => {
                 console.info('Ligação negada: ' + JSON.stringify(callingUser));
                 alert("Ligação negada: " + msg)
             });
 
             // onde dispara a ligação recebida e salvo o user na variavel "caller"
-            hubConnection.on('ChamadaRecebida', (callingUser) => {
+           wsconn.on('ChamadaRecebida', (callingUser) => {
                 console.info('Chamada Recebida de: ' + JSON.stringify(callingUser));
                 caller = callingUser;
                 $('#callmodal').attr('data-callinguser', `${callingUser.username}`);
@@ -290,7 +289,7 @@
 
 
 
-            hubConnection.on('LigaCaoAceita', (acceptingUser) => {
+           wsconn.on('LigaCaoAceita', (acceptingUser) => {
 
                 $('#divChat').show()
 
@@ -302,7 +301,7 @@
 
             });
 
-            hubConnection.on('LigacaoDesligada', (acceptingUser) => {
+           wsconn.on('LigacaoDesligada', (acceptingUser) => {
 
               //  location.reload()
 
@@ -360,7 +359,7 @@
 
 
 
-                hubConnection.invoke("senddatamsg", valueMsg, caller.connectionId).catch(function (err) {
+               wsconn.invoke("senddatamsg", valueMsg, caller.connectionId).catch(function (err) {
                     return console.error(err.toString());
                 });
                 event.preventDefault();
@@ -378,7 +377,7 @@
 
                 reader.onload = (event) => {
                     const pdfBytes = new Uint8Array(event.target.result);
-                    hubConnection.invoke("enviararquivo", pdfBytes, "nome do arquivo").catch(function (error) {
+                   wsconn.invoke("enviararquivo", pdfBytes, "nome do arquivo").catch(function (error) {
                         console.log(error);
                     });
                 };
@@ -386,7 +385,7 @@
                 reader.readAsArrayBuffer(pdfFile);
             });
 
-            hubConnection.on("receberarquivo", function (pdfBase64) {
+           wsconn.on("receberarquivo", function (pdfBase64) {
                 var pdfBytes = atob(pdfBase64); // converte de Base64 para bytes
                 var blob = new Blob([pdfBytes], { type: "application/pdf" });
                 var pdfUrl = URL.createObjectURL(blob);
@@ -401,6 +400,6 @@
 
 
     </script>
-
+    <script src="~/js/javascriptbasico.js"></script>
     <script src="~/js/funcoeswebrtc.js"></script>
 }

@@ -147,7 +147,7 @@ namespace WEbCam_Streaiming_AspnetCore.Hubs
             await UpdateOnlineUsers();
         }
 
-        public async Task SendData(string data, string targetConnectionId)
+        public async Task sendSignal(string data, string targetConnectionId)
         {
             var callingUser = _users.SingleOrDefault(u => u.ConnectionId == Context.ConnectionId);
             var targetUser = _users.SingleOrDefault(u => u.ConnectionId == targetConnectionId);
@@ -162,7 +162,7 @@ namespace WEbCam_Streaiming_AspnetCore.Hubs
             var userCall = GetConnection(callingUser.ConnectionId);
             if (userCall != null && userCall.Users.Exists(u => u.ConnectionId == targetUser.ConnectionId))
             {
-                 await Clients.Client(targetUser.ConnectionId).ReceiveData(callingUser, data);
+                 await Clients.Client(targetUser.ConnectionId).ReceiveSignal(callingUser, data);
                // await Clients.Caller.ReceiveData(callingUser, data);
             }
         }
@@ -203,7 +203,7 @@ namespace WEbCam_Streaiming_AspnetCore.Hubs
                             var targetUser = _users.SingleOrDefault(u => u.ConnectionId == connectionId);
                             if (targetUser != null)
                             {
-                                await Clients.Client(targetUser.ConnectionId).ReceiveData(callingUser, dataStream[1]);
+                                await Clients.Client(targetUser.ConnectionId).ReceiveSignal(callingUser, dataStream[1]);
                             }
                         }
 

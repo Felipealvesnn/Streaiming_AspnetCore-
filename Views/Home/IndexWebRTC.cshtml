@@ -174,7 +174,7 @@
         var IdConecçao = null
         var configuration = { "iceServers": [{ "url": "stun:stun.l.google.com:19302" }] };
         var peerConnection = null //instancia o webRTC
-        var users = [], SuaStream;
+        var users = [], SuaStream, connections = {};
         var user = null;
         var caller = null;
 
@@ -231,79 +231,18 @@
                 });
 
 
-                const isCaller =    users.filter(u => u.username == user)      //users.length === 2;
-                peerConnection = new RTCPeerConnection(configuration);
-                eventosPerl()
-                if (isCaller[0].inCall == true) {
-                    console.info('Someone is also here...');
-                    peerConnection.onnegotiationneeded = () => {
-                        peerConnection.createOffer()
-                            .then((description) => {
-                                peerConnection.setLocalDescription(
-                                    description,
-                                    () => {
-                                        var targetUserConnectionId = users.filter(u => u.username != user);
-                                        hubConnection.invoke('sendData', JSON.stringify({ 'sdp': peerConnection.localDescription }), targetUserConnectionId[0].connectionId).catch(err => console.error(err));
-                                    },
-                                    (err) => console.info(err)
-                                );
-                            })
-                            .catch(err => console.error(err));
-                    }
-                }
 
 
+                
 
-
-                peerConnection.ontrack = event => {
-                    const stream = event.streams[0];
-                    if (!remoteVideo.srcObject || remoteVideo.srcObject.id !== stream.id) {
-                        remoteVideo.srcObject = stream;
-                    }
-                };
-
-                navigator.mediaDevices.getUserMedia({
-                    audio: true,
-                    video: true,
-                }).then(stream => {
-                    // Display your local video in #localVideo element
-                    localVideo.srcObject = stream;
-                    // Add your stream to be sent to the conneting peer
-                    stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
-                }, (err) => console.error(err));
-
+                
                 
             });
 
 
-            hubConnection.on('receiveData', (signalingUser, data) => {
-                var message = JSON.parse(data);
+            hubConnection.on('receiveData', (signalingUser, signal) => {
 
-                if (message.sdp) {
-                    peerConnection.setRemoteDescription(new RTCSessionDescription(message.sdp), () => {
-
-                        if (peerConnection.remoteDescription.type === 'offer') {
-                            peerConnection.createAnswer()
-                                .then((description) => {
-                                    peerConnection.setLocalDescription(
-                                        description,
-                                        () => {
-                                            var targetUserConnectionId = users.filter(u => u.username != user);
-                                            hubConnection.invoke('sendData', JSON.stringify({ 'sdp': peerConnection.localDescription }), targetUserConnectionId[0].connectionId)
-                                                .catch(err => console.error(err));
-                                        },
-                                        (err) => console.error(err)
-                                    );
-                                })
-                                .catch(err => console.error(err));
-                        }
-                    }, (err) => console.error(err));
-                } else if (message.candidate) {
-
-                    peerConnection.addIceCandidate(
-                        new RTCIceCandidate(message.candidate), () => { }, (err) => console.error(err)
-                    );
-                }
+                newSignal(signalingUser.connectionId, signal);
 
             });
 
@@ -364,7 +303,7 @@
 
             hubConnection.on('LigacaoDesligada', (acceptingUser) => {
 
-                location.reload()
+              //  location.reload()
 
 
             });

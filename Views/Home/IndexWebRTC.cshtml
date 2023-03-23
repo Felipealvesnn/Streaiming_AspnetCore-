@@ -230,9 +230,8 @@
                                     description,
                                     () => {
                                         var targetUserConnectionId = users.filter(u => u.username != user);
-                                    setTimeout(() => {
+                                        
                                         hubConnection.invoke('sendData', JSON.stringify({ 'sdp': peerConnection.localDescription }), targetUserConnectionId[0].connectionId).catch(err => console.error(err));
-                                    }, 1000);
                                     },
                                     (err) => console.info(err)
                                 );

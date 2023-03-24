@@ -30,8 +30,26 @@ const callUser = (connectionId) => {
    wsconn.invoke('call', { "connectionId": connectionId });
 };
 const endCall = (connectionId) => {
-   wsconn.invoke('hangUp');
+   
+    closeConnection(connectionId);
+    wsconn.invoke('hangUp');
 };
+
+const closeConnection = (partnerClientId) => {
+    console.log("WebRTC: called closeConnection ");
+    var connection = connections[partnerClientId];
+
+    if (connection) {
+        // Let the user know which streams are leaving
+        // todo: foreach connection.remoteStreams -> onStreamRemoved(stream.id)
+       
+
+        // Close the connection
+        connection.close();
+        delete connections[partnerClientId]; // Remove the property
+    }
+}
+
 
 const callbackUserMediaSuccess = (stream) => {
     console.log("WebRTC: got media stream");

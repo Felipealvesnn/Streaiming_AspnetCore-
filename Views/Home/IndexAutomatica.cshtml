@@ -144,38 +144,33 @@
     <script>
         'use strict';
 
-        const localVideo = document.getElementById('localVideo');
-        const remoteVideo = document.getElementById('remoteVideo');
+        const otherAudio = document.getElementById('localVideo');
+        const partnerAudio = document.getElementById('remoteVideo');
         const conectParceiro = '@Html.Raw(ViewBag.ConectId)';
 
         var hubUrl = document.location.origin + '/cnnctn';
-        var hubConnection = new signalR.HubConnectionBuilder()
+        var wsconn = new signalR.HubConnectionBuilder()
             .withUrl(hubUrl, signalR.HttpTransportType.WebSockets)
             .configureLogging(signalR.LogLevel.Debug)
             .build();
 
         var IdConexao = null
         var configuration = { "iceServers": [{ "url": "stun:stun.l.google.com:19302" }] };
-        var peerConnection = new RTCPeerConnection(configuration) //instancia o webRTC
-        var users = [];
+        var peerConnectionConfig = new RTCPeerConnection(configuration) //instancia o webRTC
+        var users = [], localStream, connections = {};
         var user = null;
         var caller = null;
 
         $(document).ready(function () {
            // $('#divChat').hide()
 
-            // digo q se receber video, colocar na div "remoteVideo"
-            peerConnection.ontrack = event => {
-                const stream = event.streams[0];
-                if (!remoteVideo.srcObject || remoteVideo.srcObject.id !== stream.id) {
-                    remoteVideo.srcObject = stream;
-                }
-            };
-
-            hubConnection.start().then(() => {
+           
+       
+            wsconn.start().then(() => {
                 user = generateId();
                 userJoin(user);
-                IdConexao = hubConnection.connection.connectionId
+                initializeUserMedia() // ligo a cam
+                IdConexao = wsconn.connection.connectionId
                 $("#IdUser").text(document.location.origin + "@Url.Action("IndexAutomatica", "Home")?ConectId=" +IdConexao);
                 console.info(`Connected as ${user}`);
 
@@ -196,46 +191,18 @@
 
                      }
 
-         
-        
-           
-
-      
-
-            hubConnection.on('receiveData', (signalingUser, data) => {
-                var message = JSON.parse(data);
-
-                if (message.sdp) {
-                    peerConnection.setRemoteDescription(new RTCSessionDescription(message.sdp), () => {
-
-                        if (peerConnection.remoteDescription.type === 'offer') {
-                            peerConnection.createAnswer()
-                                .then((description) => {
-                                    peerConnection.setLocalDescription(
-                                        description,
-                                        () => {
-                                            var targetUserConnectionId = signalingUser;
-                                            hubConnection.invoke('sendData', JSON.stringify({ 'sdp': peerConnection.localDescription }), targetUserConnectionId.connectionId)
-                                                .catch(err => console.error(err));
-                                        },
-                                        (err) => console.error(err)
-                                    );
-                                })
-                                .catch(err => console.error(err));
-                        }
-                    }, (err) => console.error(err));
-                } else if (message.candidate) {
-
-                    peerConnection.addIceCandidate(
-                        new RTCIceCandidate(message.candidate), () => { }, (err) => console.error(err)
-                    );
-                }
 
 
 
+
+
+
+            wsconn.on('receiveSignal', (signalingUser, signal) => {
+
+                newSignal(signalingUser.connectionId, signal);
             });
 
-            hubConnection.on('receivedatamsg', (signalingUser, data) => {
+            wsconn.on('receivedatamsg', (signalingUser, data) => {
                 let dataAtual = new Date();
                 let horas = dataAtual.getHours();
                 let minutos = dataAtual.getMinutes();
@@ -258,13 +225,13 @@
 
             })
 
-            hubConnection.on('LidacaoNegada', (callingUser, msg) => {
+            wsconn.on('LidacaoNegada', (callingUser, msg) => {
                 console.info('Ligação negada: ' + JSON.stringify(callingUser));
                 alert("Ligação negada: " + msg)
             });
 
             // onde dispara a ligação recebida e salvo o user na variavel "caller"
-            hubConnection.on('ChamadaRecebida', (callingUser) => {
+            wsconn.on('ChamadaRecebida', (callingUser) => {
                 console.info('Chamada Recebida de: ' + JSON.stringify(callingUser));
                 caller = callingUser;
                 $('#callmodal').attr('data-callinguser', `${callingUser.username}`);
@@ -274,7 +241,7 @@
 
 
 
-            hubConnection.on('LigaCaoAceita', (acceptingUser) => {
+            wsconn.on('LigaCaoAceita', (acceptingUser) => {
 
                 $('#divChat').show()
 
@@ -285,7 +252,7 @@
 
             });
 
-            hubConnection.on('LigacaoDesligada', (acceptingUser) => {
+            wsconn.on('LigacaoDesligada', (acceptingUser) => {
 
                 location.reload()
 
@@ -321,7 +288,7 @@
 
 
 
-                hubConnection.invoke("senddatamsg", valueMsg, caller.connectionId).catch(function (err) {
+                wsconn.invoke("senddatamsg", valueMsg, caller.connectionId).catch(function (err) {
                     return console.error(err.toString());
                 });
                 event.preventDefault();
@@ -339,7 +306,7 @@
 
                 reader.onload = (event) => {
                     const pdfBytes = new Uint8Array(event.target.result);
-                    hubConnection.invoke("enviararquivo", pdfBytes, "nome do arquivo").catch(function (error) {
+                    wsconn.invoke("enviararquivo", pdfBytes, "nome do arquivo").catch(function (error) {
                         console.log(error);
                     });
                 };
@@ -347,7 +314,7 @@
                 reader.readAsArrayBuffer(pdfFile);
             });
 
-            hubConnection.on("receberarquivo", function (pdfBase64) {
+            wsconn.on("receberarquivo", function (pdfBase64) {
                 var pdfBytes = atob(pdfBase64); // converte de Base64 para bytes
                 var blob = new Blob([pdfBytes], { type: "application/pdf" });
                 var pdfUrl = URL.createObjectURL(blob);
@@ -362,6 +329,6 @@
 
 
     </script>
-
+    <script src="~/js/javascriptbasico.js"></script>
     <script src="~/js/funcoeswebrtc.js"></script>
 }

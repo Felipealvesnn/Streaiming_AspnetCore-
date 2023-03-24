@@ -23,7 +23,11 @@ const userJoin = (username) => {
     })
     $("#IdUser").text(username);
 };
+const limparChat = () => {
+    $('#Chatmesseger div.chatHub').remove();
+    $('#divChat').hide()
 
+}
 const callUser = (connectionId) => {
     /* caller = { "connectionId": connectionId }*/
 

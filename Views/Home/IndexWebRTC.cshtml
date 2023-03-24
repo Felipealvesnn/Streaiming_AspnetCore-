@@ -180,7 +180,7 @@
        
 
         $(document).ready(function () {
-            $('#divChat').hide()
+         
 
             // digo q se receber video, colocar na div "remoteVideo"
 
@@ -232,8 +232,10 @@
                 });
 
 
-
-
+               var usuario = users.find(u => u.username == user)
+                if(usuario.inCall ==false){
+                limparChat();
+                }
                 
 
                 
@@ -255,7 +257,7 @@
 
 
                 var msgem = `
-                                                                                    <div class="chat-message-left pb-4">
+                                                                                    <div class="chat-message-left pb-4 chatHub">
                                                             <div>
                                                                 <img src="https://bootdey.com/img/Content/avatar/avatar3.png" class="rounded-circle mr-1" alt="Sharon Lessman" width="40" height="40">
                                                                 <div class="text-muted small text-nowrap mt-2">2:34 am</div>
@@ -338,7 +340,7 @@
                 var dataAtual = new Date();
                 var horas = dataAtual.getHours();
                 var minutos = dataAtual.getMinutes();
-                var mensagem = `   <div class="chat-message-right pb-4">
+                var mensagem = `   <div class="chat-message-right pb-4 chatHub">
                                                         <div>
                                                             <img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="rounded-circle mr-1" alt="Chris Wood" width="40" height="40">
                                                             <div class="text-muted small text-nowrap mt-2">2:33 am</div>

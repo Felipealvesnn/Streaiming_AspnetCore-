@@ -32,17 +32,17 @@
         </div>
     </div>
 </div>
-<div class="row">
-    <div class="col-6">
+<div class="row  align-items-center">
+    <div class="col-6 ">
         Você
         <div class="card card-body bg-light m-2 ">
-            <video id="localVideo" playsinline autoplay muted></video>
+            <video id="localVideo" playsinline autoplay muted ></video>
         </div>
     </div>
-    <div class="col-6">
+    <div class="col-6 ">
         Servidor
         <div class="card card-body bg-light m-2 ">
-            <video id="remoteVideo" playsinline autoplay></video>
+            <video id="remoteVideo" playsinline autoplay ></video>
         </div>
     </div>
 
@@ -162,7 +162,7 @@
         var webrtcConstraints = { audio: true, video: true };
         const otherAudio = document.getElementById('localVideo');
         const partnerAudio = document.getElementById('remoteVideo');
-
+        
         var hubUrl = document.location.origin + '/cnnctn';
         var wsconn = new signalR.HubConnectionBuilder()
             .withUrl(hubUrl, signalR.HttpTransportType.WebSockets)
@@ -182,11 +182,7 @@
         $(document).ready(function () {
          
 
-            // digo q se receber video, colocar na div "remoteVideo"
-
-            // ligarWebCam()
-
-
+         
 
 
            wsconn.start().then(() => {
@@ -242,11 +238,7 @@
                 
             });
 
-
-            wsconn.on('receiveSignal', (signalingUser, signal) => {
-              
-                newSignal(signalingUser.connectionId, signal);
-            });
+      
 
            wsconn.on('receivedatamsg', (signalingUser, data) => {
                 let dataAtual = new Date();
@@ -305,7 +297,7 @@
 
            wsconn.on('LigacaoDesligada', (acceptingUser) => {
 
-              //  location.reload()
+             closeConnection(caller.connectionId);
 
 
             });

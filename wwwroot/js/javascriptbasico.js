@@ -35,7 +35,7 @@ const callUser = (connectionId) => {
 };
 const endCall = (connectionId) => {
    
-    closeConnection(connectionId);
+  
     wsconn.invoke('hangUp');
 };
 
@@ -46,7 +46,7 @@ const closeConnection = (partnerClientId) => {
     if (connection) {
         // Let the user know which streams are leaving
         // todo: foreach connection.remoteStreams -> onStreamRemoved(stream.id)
-       
+        partnerAudio.srcObject =null
 
         // Close the connection
         connection.close();
@@ -55,19 +55,12 @@ const closeConnection = (partnerClientId) => {
 }
 
 
-const callbackUserMediaSuccess = (stream) => {
-    console.log("WebRTC: got media stream");
-    localStream = stream;
 
-    const audioTracks = localStream.getAudioTracks();
-    if (audioTracks.length > 0) {
-        console.log(`Using Audio device: ${audioTracks[0].label}`);
-    }
-};
 
 const initializeUserMedia = async () => {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         // Informe ao usuário que a funcionalidade não é suportada em seu navegador
+        alert("funcionalidade não é suportada em seu navegador")
         return;
     }
 
@@ -78,6 +71,7 @@ const initializeUserMedia = async () => {
         });
         localVideo.srcObject = stream;
         localStream = stream;
+       
     } catch (err) {
         // Se o usuário negar o acesso ao dispositivo de áudio/vídeo, mostre uma mensagem de erro adequada
         console.error('Não foi possível acessar o dispositivo de áudio/vídeo', err);

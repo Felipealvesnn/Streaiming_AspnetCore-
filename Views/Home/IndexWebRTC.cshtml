@@ -357,7 +357,9 @@
                 $("#Chatmesseger").append(mensagem);
                 scrollToBottom('DivSubnir')
 
-
+                $('#formchjat').each(function () {
+                    this.reset();
+                });
 
                wsconn.invoke("senddatamsg", valueMsg, caller.connectionId).catch(function (err) {
                     return console.error(err.toString());

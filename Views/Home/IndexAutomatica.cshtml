@@ -13,18 +13,21 @@
 <link href="~/css/chatcss.css" rel="stylesheet" />
 <div class="row " id="DivWithID">
     <div class="col-12 card card-body text-center">
-        <div class="d-flex mx-auto card card-body"><strong>Seu Link da Sala:</strong>&nbsp;<p id="IdUser"></p></div>
-       
+        <div class="d-flex justify-content-center align-items-center mx-auto card card-body w-50"><strong>Seu Link da Sala:</strong>&nbsp;<input  class="p-2 form-control" id="IdUser">
+            <button id="CopyTextBTN" class=" btn btn-outline-success mt-2"  data-clipboard-target="#IdUser">Copiar texto</button>
+        </div>
+      
+
     </div>
 </div>
 <div class="row">
-    <div class="col-6">
+    <div class="col-lg-6 col-md-12 col-sm-12">
         Você
         <div class="card card-body bg-light m-2 ">
             <video id="localVideo" playsinline autoplay muted></video>
         </div>
     </div>
-    <div class="col-6">
+    <div class="col-lg-6 col-md-12 col-sm-12">
         Servidor
         <div class="card card-body bg-light m-2 ">
             <video id="remoteVideo" playsinline autoplay></video>
@@ -140,7 +143,7 @@
 @section Scripts
     {
 
-
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.10/dist/clipboard.min.js"></script>
     <script>
         'use strict';
 
@@ -162,8 +165,17 @@
         var caller = null;
 
         $(document).ready(function () {
-         
 
+            var link = 'https://www.exemplo.com'
+
+
+            var clipboard = new ClipboardJS(CopyTextBTN);
+
+            clipboard.on('success', function (e) {
+                console.info('Action:', e.action);
+                console.info('Text:', e.text);
+                console.info('Trigger:', e.trigger);
+            });
            
        
             wsconn.start().then(() => {
@@ -171,7 +183,7 @@
                 userJoin(user);
                 initializeUserMedia() // ligo a cam
                 IdConexao = wsconn.connection.connectionId
-                $("#IdUser").text(document.location.origin + "@Url.Action("IndexAutomatica", "Home")?ConectId=" +IdConexao);
+                $("#IdUser").val(document.location.origin + "@Url.Action("IndexAutomatica", "Home")?ConectId=" +IdConexao);
                 console.info(`Connected as ${user}`);
 
             }).catch(err => console.error(err));

@@ -36,13 +36,13 @@
     <div class="col-lg-6 col-md-12 col-sm-12">
         Você
         <div class="card card-body bg-light m-2 ">
-            <video id="localVideo" playsinline autoplay muted ></video>
+            <video id="localVideo" playsinline autoplay muted></video>
         </div>
     </div>
     <div class="col-lg-6 col-md-12 col-sm-12">
         Servidor
         <div class="card card-body bg-light m-2 ">
-            <video id="remoteVideo" playsinline autoplay ></video>
+            <video id="remoteVideo" playsinline autoplay></video>
         </div>
     </div>
 
@@ -162,7 +162,7 @@
         var webrtcConstraints = { audio: true, video: true };
         const otherAudio = document.getElementById('localVideo');
         const partnerAudio = document.getElementById('remoteVideo');
-        
+
         var hubUrl = document.location.origin + '/cnnctn';
         var wsconn = new signalR.HubConnectionBuilder()
             .withUrl(hubUrl, signalR.HttpTransportType.WebSockets)
@@ -177,25 +177,25 @@
         var users = [], localStream, connections = {};
         var user = null;
         var caller = null;
-       
+
 
         $(document).ready(function () {
-         
-
-         
 
 
-           wsconn.start().then(() => {
+
+
+
+            wsconn.start().then(() => {
                 user = generateId();
                 userJoin(user);
                 initializeUserMedia() // ligo a cam
-                IdConecçao =wsconn.connection.connectionId
+                IdConecçao = wsconn.connection.connectionId
                 console.info(`Connected as ${user}`);
 
 
             }).catch(err => console.error(err));
 
-           wsconn.on('AttUsuariosOnline', (userList) => {
+            wsconn.on('AttUsuariosOnline', (userList) => {
                 console.info('Check online users...' + JSON.stringify(userList));
                 users = userList;
 
@@ -228,36 +228,35 @@
                 });
 
 
-               var usuario = users.find(u => u.username == user)
-                if(usuario.inCall ==false){
-                limparChat();
+                var usuario = users.find(u => u.username == user)
+                if (usuario.inCall == false) {
+                    limparChat();
                 }
-                
 
-                
-                
+
+
+
             });
 
-      
-
-           wsconn.on('receivedatamsg', (signalingUser, data) => {
+           
+            wsconn.on('receivedatamsg', (signalingUser, data) => {
                 var horaAtual = new Date().toLocaleTimeString();
 
                 var msg = data.replace(/&/g, "&").replace(/</g, "<").replace(/>/g, ">");
 
 
                 var msgem = `
-                                                                                    <div class="chat-message-left pb-4 chatHub">
-                                                            <div>
-                                                                <img src="https://bootdey.com/img/Content/avatar/avatar3.png" class="rounded-circle mr-1" alt="Sharon Lessman" width="40" height="40">
-                                                                <div class="text-muted small text-nowrap mt-2">${horaAtual}</div>
-                                                            </div>
-                                                            <div class="flex-shrink-1 bg-light rounded py-2 px-3 ml-3">
-                                                                <div class="font-weight-bold mb-1">Sharon Lessman</div>
-                                                                       ${msg}
-                                                            </div>
-                                                        </div>
-                                                                            `
+                                                                                                    <div class="chat-message-left pb-4 chatHub">
+                                                                            <div>
+                                                                                <img src="https://bootdey.com/img/Content/avatar/avatar3.png" class="rounded-circle mr-1" alt="Sharon Lessman" width="40" height="40">
+                                                                                <div class="text-muted small text-nowrap mt-2">${horaAtual}</div>
+                                                                            </div>
+                                                                            <div class="flex-shrink-1 bg-light rounded py-2 px-3 ml-3">
+                                                                                <div class="font-weight-bold mb-1">Sharon Lessman</div>
+                                                                                       ${msg}
+                                                                            </div>
+                                                                        </div>
+                                                                                            `
 
                 $("#Chatmesseger").append(msgem);
                 scrollToBottom('DivSubnir')
@@ -265,13 +264,13 @@
             }
             )
 
-           wsconn.on('LidacaoNegada', (callingUser, msg) => {
+            wsconn.on('LidacaoNegada', (callingUser, msg) => {
                 console.info('Ligação negada: ' + JSON.stringify(callingUser));
                 alert("Ligação negada: " + msg)
             });
 
             // onde dispara a ligação recebida e salvo o user na variavel "caller"
-           wsconn.on('ChamadaRecebida', (callingUser) => {
+            wsconn.on('ChamadaRecebida', (callingUser) => {
                 console.info('Chamada Recebida de: ' + JSON.stringify(callingUser));
                 caller = callingUser;
                 $('#callmodal').attr('data-callinguser', `${callingUser.username}`);
@@ -281,21 +280,21 @@
 
 
 
-           wsconn.on('LigaCaoAceita', (acceptingUser) => {
+            wsconn.on('LigaCaoAceita', (acceptingUser) => {
 
                 $('#divChat').show()
 
                 caller = acceptingUser;
-             
+
 
                 console.info('Ligação aceita ' + JSON.stringify(acceptingUser) + '.');
 
 
             });
 
-           wsconn.on('LigacaoDesligada', (acceptingUser) => {
+            wsconn.on('LigacaoDesligada', (acceptingUser) => {
 
-             closeConnection(caller.connectionId);
+                closeConnection(caller.connectionId);
 
 
             });
@@ -321,26 +320,29 @@
                 }
 
 
-
-
             }) // metodo de ligar pelo butom
 
+            wsconn.on("ReceberMensagem", function (mensagem) {
+                alert(`Mensagem recebida: ${mensagem}`)
+            })
+
             $("#formchjat").on("submit", (event) => {
+              
                 var valueMsg = $("#ChatConversa").val();
                 var horaAtual = new Date().toLocaleTimeString();
                 var mensagem = `   <div class="chat-message-right pb-4 chatHub">
-                                                        <div>
-                                                            <img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="rounded-circle mr-1" alt="Chris Wood" width="40" height="40">
-                                                            <div class="text-muted small text-nowrap mt-2">${horaAtual}</div>
-                                                        </div>
-                                                        <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
-                                                            <div class="font-weight-bold mb-1">You</div>
-                                                                   ${valueMsg}
-                                                        </div>
-                                                    </div>
+                                                                        <div>
+                                                                            <img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="rounded-circle mr-1" alt="Chris Wood" width="40" height="40">
+                                                                            <div class="text-muted small text-nowrap mt-2">${horaAtual}</div>
+                                                                        </div>
+                                                                        <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
+                                                                            <div class="font-weight-bold mb-1">You</div>
+                                                                                   ${valueMsg}
+                                                                        </div>
+                                                                    </div>
 
 
-                                                                    `
+                                                                                    `
 
 
 
@@ -351,7 +353,7 @@
                     this.reset();
                 });
 
-               wsconn.invoke("senddatamsg", valueMsg, caller.connectionId).catch(function (err) {
+                wsconn.invoke("senddatamsg", valueMsg, caller.connectionId).catch(function (err) {
                     return console.error(err.toString());
                 });
                 event.preventDefault();
@@ -359,17 +361,17 @@
 
 
 
-            document.getElementById("file-upload-form").addEventListener("submit", function (event) {
+            $("#file-upload-form").submit(function (event) {
                 event.preventDefault();
 
-                var formData = new FormData(event.target);
+                var formData = new FormData($(this)[0]);
                 var pdfFile = formData.get("pdfFile");
 
                 const reader = new FileReader();
 
                 reader.onload = (event) => {
                     const pdfBytes = new Uint8Array(event.target.result);
-                   wsconn.invoke("enviararquivo", pdfBytes, "nome do arquivo").catch(function (error) {
+                    wsconn.invoke("EnviarArquivo", pdfBytes, pdfFile.name).catch(function (error) {
                         console.log(error);
                     });
                 };
@@ -377,7 +379,9 @@
                 reader.readAsArrayBuffer(pdfFile);
             });
 
-           wsconn.on("receberarquivo", function (pdfBase64) {
+
+
+            wsconn.on("receberArquivo", function (pdfBase64) {
                 var pdfBytes = atob(pdfBase64); // converte de Base64 para bytes
                 var blob = new Blob([pdfBytes], { type: "application/pdf" });
                 var pdfUrl = URL.createObjectURL(blob);

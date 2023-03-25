@@ -22,7 +22,7 @@ const initializeConnection = (partnerClientId) => {
 
         }
     });
-
+    connection.addStream(localstream);
 
     connection.onicecandidate = evt => callbackIceCandidate(evt, connection, partnerClientId); // ICE Candidate Callback
     //connection.onnegotiationneeded = evt => callbackNegotiationNeeded(connection, evt); // Negotiation Needed Callback
@@ -69,7 +69,7 @@ attachMediaStream = (e) => {
 const callbackRemoveStream = (connection, evt) => {
     console.log('WebRTC: removing remote stream from partner window');
 
-    otherAudio.src = null;
+    partnerAudio.src = null;
 }
 
 const initiateOffer = (partnerClientId, stream) => {
@@ -79,7 +79,7 @@ const initiateOffer = (partnerClientId, stream) => {
 
     //console.log('initiate Offer stream: ', stream);
     //console.log("offer connection: ", connection);
-    connection.addStream(stream);// add our audio/video stream
+   // connection.addStream(stream);// add our audio/video stream
     console.log("WebRTC: Added local stream");
 
     connection.createOffer().then(offer => {
@@ -156,7 +156,7 @@ const receivedSdpSignal = (connection, partnerClientId, sdp) => {
         console.log('WebRTC: set Remote Description');
         if (connection.remoteDescription.type == "offer") {
             console.log('WebRTC: remote Description type offer');
-            connection.addStream(localStream);
+          //  connection.addStream(localstream);
             console.log('WebRTC: added stream');
             connection.createAnswer().then((desc) => {
                 console.log('WebRTC: create Answer...');

@@ -2,7 +2,7 @@ const acceptCall = () => {
     var callingUserName = $('#callmodal').attr('data-cid');
    wsconn.invoke('AnswerCall', true, caller).catch(err => console.error(err));
     $('#divChat').show()
-    initiateOffer(caller.connectionId, localStream)
+    initiateOffer(caller.connectionId, localstream)
     caller = null;
     $('#callmodal').modal('hide');
 
@@ -68,10 +68,10 @@ const initializeUserMedia = async () => {
     try {
         const stream = await navigator.mediaDevices.getUserMedia({
             audio: true,
-            video: false,
+            video: true,
         });
-        localVideo.srcObject = stream;
-        localStream = stream;
+        otherAudio.srcObject = stream;
+        localstream = stream;
 
     } catch (err) {
         // Se o usuário negar o acesso ao dispositivo de áudio/vídeo, mostre uma mensagem de erro adequada
@@ -81,8 +81,8 @@ const initializeUserMedia = async () => {
                 audio: true,
                 video: false,
             });
-            localVideo.srcObject = stream;
-            localStream = stream;
+            otherAudio.srcObject = stream;
+            localstream = stream;
         } catch (err) {
             // Se não for possível acessar o dispositivo de áudio, mostre uma mensagem de erro adequada
             console.error('Não foi possível acessar o dispositivo de áudio', err);

@@ -59,7 +59,7 @@ const callbackAddStream = (connection, evt) => {
 attachMediaStream = (e) => {
     //console.log(e);
     console.log("OnPage: called attachMediaStream");
-    var partnerAudio = document.querySelector('.audio.partner');
+  
     if (partnerAudio.srcObject !== e.stream) {
         partnerAudio.srcObject = e.stream;
         console.log("OnPage: Attached remote stream");

@@ -59,7 +59,7 @@ const callbackAddStream = (connection, evt) => {
 attachMediaStream = (e) => {
     //console.log(e);
     console.log("OnPage: called attachMediaStream");
-  
+    var traks = e.stream.getTracks()
     if (partnerAudio.srcObject !== e.stream) {
         partnerAudio.srcObject = e.stream;
         console.log("OnPage: Attached remote stream");
@@ -163,9 +163,9 @@ const receivedSdpSignal = (connection, partnerClientId, sdp) => {
                 connection.setLocalDescription(desc, () => {
                     console.log('WebRTC: set Local Description...');
                     console.log('connection.localDescription: ', connection.localDescription);
-                    //setTimeout(() => {
+                    setTimeout(() => {
                     sendHubSignal(JSON.stringify({ "sdp": connection.localDescription }), partnerClientId);
-                    //}, 1000);
+                    }, 1000);
                 }, errorHandler);
             }, errorHandler);
         } else if (connection.remoteDescription.type == "answer") {

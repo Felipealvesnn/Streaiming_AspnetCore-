@@ -89,7 +89,7 @@ const initiateOffer = (partnerClientId, stream) => {
             console.log('connection before sending offer ', connection);
             setTimeout(() => {
                 sendHubSignal(JSON.stringify({ "sdp": connection.localDescription }), partnerClientId);
-            }, 1000);
+            }, 3000);
         }).catch(err => console.error('WebRTC: Error while setting local description', err));
     }).catch(err => console.error('WebRTC: Error while creating offer', err));
 
@@ -120,11 +120,11 @@ const newSignal = (partnerClientId, data) => {
     } else if (signal.candidate) {
         console.log('WebRTC: candidate signal');
         console.log('WebRTC: adding full candidate');
-        connection.addIceCandidate(new RTCIceCandidate(candidate), () => console.log("WebRTC: added candidate successfully"), () => console.log("WebRTC: cannot add candidate"));
+        connection.addIceCandidate(new RTCIceCandidate(signal.candidate), () => console.log("WebRTC: added candidate successfully"), () => console.log("WebRTC: cannot add candidate"));
 
     } else {
         console.log('WebRTC: adding null candidate');
-        connection.addIceCandidate(null, () => console.log("WebRTC: added null candidate successfully"), () => console.log("WebRTC: cannot add null candidate"));
+        connection.addIceCandidate(null, () => console.log("WebRTC: added null candidate successfully"), errorHandler);
     }
 }
 

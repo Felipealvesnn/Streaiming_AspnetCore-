@@ -67,7 +67,7 @@ const initializeUserMedia = async () => {
     try {
         const stream = await navigator.mediaDevices.getUserMedia({
             audio: true,
-            video: true,
+            video: false,
         });
         localVideo.srcObject = stream;
         localStream = stream;

@@ -179,9 +179,7 @@ const receivedSdpSignal = (connection, partnerClientId, sdp) => {
 
 
 wsconn.on('receiveSignal', (signalingUser, signal) => {
-    //console.log('WebRTC: receive signal ');
-    //console.log(signalingUser);
-    //console.log('NewSignal', signal);
+ 
     newSignal(signalingUser.connectionId, signal);
 });
 

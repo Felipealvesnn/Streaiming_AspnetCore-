@@ -13,18 +13,21 @@
 <link href="~/css/chatcss.css" rel="stylesheet" />
 <div class="row " id="DivWithID">
     <div class="col-12 card card-body text-center">
-        <div class="d-flex mx-auto card card-body"><strong>Seu Link da Sala:</strong>&nbsp;<p id="IdUser"></p></div>
-       
+        <div class="d-flex justify-content-center align-items-center mx-auto card card-body w-50"><strong>Seu Link da Sala:</strong>&nbsp;<input  class="p-2 form-control" id="IdUser">
+            <button id="CopyTextBTN" class=" btn btn-outline-success mt-2"  data-clipboard-target="#IdUser">Copiar texto</button>
+        </div>
+      
+
     </div>
 </div>
 <div class="row">
-    <div class="col-6">
+    <div class="col-lg-6 col-md-12 col-sm-12">
         Você
         <div class="card card-body bg-light m-2 ">
             <video id="localVideo" playsinline autoplay muted></video>
         </div>
     </div>
-    <div class="col-6">
+    <div class="col-lg-6 col-md-12 col-sm-12">
         Servidor
         <div class="card card-body bg-light m-2 ">
             <video id="remoteVideo" playsinline autoplay></video>
@@ -49,7 +52,7 @@
 
         <div class="card">
             <div class="row g-0">
-              
+
                 <div class="col-12 ">
                     <div class="py-2 px-4 border-bottom d-none d-lg-block">
                         <div class="d-flex align-items-center py-1">
@@ -69,38 +72,38 @@
                     </div>
 
                     <div class="position-relative">
-                        <div class="chat-messages p-4">
+                        <div class="chat-messages p-4" id="Chatmesseger">
 
-                            <div class="chat-message-right pb-4">
-                                <div>
-                                    <img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="rounded-circle mr-1" alt="Chris Wood" width="40" height="40">
-                                    <div class="text-muted small text-nowrap mt-2">2:33 am</div>
-                                </div>
-                                <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
-                                    <div class="font-weight-bold mb-1">You</div>
-                                    Lorem ipsum dolor sit amet, vis erat denique in, dicunt prodesset te vix.
-                                </div>
+                            @*           <div class="chat-message-right pb-4">
+                            <div>
+                            <img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="rounded-circle mr-1" alt="Chris Wood" width="40" height="40">
+                            <div class="text-muted small text-nowrap mt-2">2:33 am</div>
+                            </div>
+                            <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
+                            <div class="font-weight-bold mb-1">You</div>
+                            Lorem ipsum dolor sit amet, vis erat denique in, dicunt prodesset te vix.
+                            </div>
                             </div>
 
                             <div class="chat-message-left pb-4">
-                                <div>
-                                    <img src="https://bootdey.com/img/Content/avatar/avatar3.png" class="rounded-circle mr-1" alt="Sharon Lessman" width="40" height="40">
-                                    <div class="text-muted small text-nowrap mt-2">2:34 am</div>
-                                </div>
-                                <div class="flex-shrink-1 bg-light rounded py-2 px-3 ml-3">
-                                    <div class="font-weight-bold mb-1">Sharon Lessman</div>
-                                    Sit meis deleniti eu, pri vidit meliore docendi ut, an eum erat animal commodo.
-                                </div>
+                            <div>
+                            <img src="https://bootdey.com/img/Content/avatar/avatar3.png" class="rounded-circle mr-1" alt="Sharon Lessman" width="40" height="40">
+                            <div class="text-muted small text-nowrap mt-2">2:34 am</div>
                             </div>
+                            <div class="flex-shrink-1 bg-light rounded py-2 px-3 ml-3">
+                            <div class="font-weight-bold mb-1">Sharon Lessman</div>
+                            Sit meis deleniti eu, pri vidit meliore docendi ut, an eum erat animal commodo.
+                            </div>
+                            </div>*@
 
-                           
 
-                                       
+
+
 
                         </div>
                     </div>
 
-                    <form class="flex-grow-0 py-3 px-4 border-top" id="Chatmensage">
+                    <form class="flex-grow-0 py-3 px-4 border-top" id="formchjat">
                         <div class="input-group">
                             <input type="text" id="ChatConversa" class="form-control" placeholder="Type your message">
                             <button class="btn btn-primary">Send</button>
@@ -140,7 +143,7 @@
 @section Scripts
     {
 
-
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.10/dist/clipboard.min.js"></script>
     <script>
         'use strict';
 
@@ -162,8 +165,17 @@
         var caller = null;
 
         $(document).ready(function () {
-           // $('#divChat').hide()
 
+            var link = 'https://www.exemplo.com'
+
+
+            var clipboard = new ClipboardJS(CopyTextBTN);
+
+            clipboard.on('success', function (e) {
+                console.info('Action:', e.action);
+                console.info('Text:', e.text);
+                console.info('Trigger:', e.trigger);
+            });
            
        
             wsconn.start().then(() => {
@@ -171,10 +183,24 @@
                 userJoin(user);
                 initializeUserMedia() // ligo a cam
                 IdConexao = wsconn.connection.connectionId
-                $("#IdUser").text(document.location.origin + "@Url.Action("IndexAutomatica", "Home")?ConectId=" +IdConexao);
+                $("#IdUser").val(document.location.origin + "@Url.Action("IndexAutomatica", "Home")?ConectId=" +IdConexao);
                 console.info(`Connected as ${user}`);
 
             }).catch(err => console.error(err));
+
+            wsconn.on('AttUsuariosOnline', (userList) => {
+
+                console.info('Check online users...' + JSON.stringify(userList));
+                users = userList;
+                 var usuario = users.find(u => u.username == user)
+                if(usuario.inCall ==false){
+                limparChat();
+                }
+            
+            
+            })
+
+
 
 
             if (conectParceiro) 
@@ -197,33 +223,34 @@
 
 
 
-            wsconn.on('receiveSignal', (signalingUser, signal) => {
 
-                newSignal(signalingUser.connectionId, signal);
-            });
 
             wsconn.on('receivedatamsg', (signalingUser, data) => {
                 let dataAtual = new Date();
                 let horas = dataAtual.getHours();
                 let minutos = dataAtual.getMinutes();
 
-
                 var msg = data.replace(/&/g, "&").replace(/</g, "<").replace(/>/g, ">");
 
-                var li = `<li class="clearfix">
-                                                        <div class="message-data">
-                                                                    <span class="message-data-time"> ${horas}:${minutos}, Today</span>
-                                                        </div>
-                                                                        <div class="message my-message">${msg}.</div>
-                                                    </li>
-                                                    
-                                                    `
 
+                var msgem = `
+                                                                                            <div class="chat-message-left pb-4 chatHub">
+                                                                    <div>
+                                                                        <img src="https://bootdey.com/img/Content/avatar/avatar3.png" class="rounded-circle mr-1" alt="Sharon Lessman" width="40" height="40">
+                                                                        <div class="text-muted small text-nowrap mt-2">2:34 am</div>
+                                                                    </div>
+                                                                    <div class="flex-shrink-1 bg-light rounded py-2 px-3 ml-3">
+                                                                        <div class="font-weight-bold mb-1">Sharon Lessman</div>
+                                                                               ${msg}
+                                                                    </div>
+                                                                </div>
+                                                                                    `
 
-                $("#UlConversa").append(li);
+                $("#Chatmesseger").append(msgem);
                 scrollToBottom('DivSubnir')
 
-            })
+            }
+            )
 
             wsconn.on('LidacaoNegada', (callingUser, msg) => {
                 console.info('Ligação negada: ' + JSON.stringify(callingUser));
@@ -254,7 +281,7 @@
 
             wsconn.on('LigacaoDesligada', (acceptingUser) => {
 
-                location.reload()
+                closeConnection(caller.connectionId);
 
 
             });
@@ -262,31 +289,30 @@
 
 
 
-            $("#Chatmensage").on("submit", (event) => {
-                var valueMsg = $("#ChatConversa").val();
-                var dataAtual = new Date();
-                var horas = dataAtual.getHours();
-                var minutos = dataAtual.getMinutes();
-                var mensagem = `   <div class="chat-message-right pb-4">
-                                        <div>
-                                            <img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="rounded-circle mr-1" alt="Chris Wood" width="40" height="40">
-                                            <div class="text-muted small text-nowrap mt-2">2:33 am</div>
-                                        </div>
-                                        <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
-                                            <div class="font-weight-bold mb-1">You</div>
-                                                   ${valueMsg}
-                                        </div>
-                                    </div>
-                                                    
-                                                    
-                                                    `
+            $("#formchjat").on("submit", (event) => {
+                var horaAtual = new Date().toLocaleTimeString();
+                var mensagem = `   <div class="chat-message-right pb-4 chatHub">
+                                                                <div>
+                                                                    <img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="rounded-circle mr-1" alt="Chris Wood" width="40" height="40">
+                                                                    <div class="text-muted small text-nowrap mt-2">${horaAtual} am</div>
+                                                                </div>
+                                                                <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
+                                                                    <div class="font-weight-bold mb-1">You</div>
+                                                                           ${valueMsg}
+                                                                </div>
+                                                            </div>
+
+
+                                                                            `
 
 
 
-                $("#UlConversa").append(mensagem);
+                $("#Chatmesseger").append(mensagem);
                 scrollToBottom('DivSubnir')
 
-
+                $('#formchjat').each(function () {
+                    this.reset();
+                });
 
                 wsconn.invoke("senddatamsg", valueMsg, caller.connectionId).catch(function (err) {
                     return console.error(err.toString());

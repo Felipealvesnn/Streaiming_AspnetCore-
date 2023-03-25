@@ -4,13 +4,13 @@ using WEbCam_Streaiming_AspnetCore.Models;
 
 namespace WEbCam_Streaiming_AspnetCore.Hubs
 {
-    public class Hub :Hub<IConnectionHub>
+    public class MyHub :Hub<IConnectionHub>
     {
         private readonly List<User> _users;
         private readonly List<Connection> _connections;
         private readonly List<Call> _calls;
 
-        public Hub(List<User> users, List<Connection> connections, List<Call> calls)
+        public MyHub(List<User> users, List<Connection> connections, List<Call> calls)
         {
             _users = users;
             _connections = connections;
@@ -251,14 +251,27 @@ namespace WEbCam_Streaiming_AspnetCore.Hubs
             return matchingCall;
         }
         [HubMethodName("enviararquivo")]
-        public async Task EnviarArquivo(byte[] pdfBytes, string nomeArquivo)
+        public async Task EnviarArquivo(byte[] arquivo, string nomeArquivo)
         {
-            string caminhoArquivo = Path.Combine(Path.GetTempPath(), nomeArquivo);
-            await File.WriteAllBytesAsync(caminhoArquivo, pdfBytes);
+            try
+            {
+                // Cria o caminho completo para o arquivo temporário
+                var caminhoArquivo = Path.Combine(Path.GetTempPath(), nomeArquivo);
 
-            var arquivo = new { Nome = nomeArquivo, Dados = pdfBytes };
+                // Salva o arquivo no local temporário
+                using (var stream = new FileStream(caminhoArquivo, FileMode.Create))
+                {
+                    await stream.WriteAsync(arquivo, 0, arquivo.Length);
+                }
 
-            await Clients.All.receberArquivo(arquivo);
+                // Chama o método para enviar o arquivo para todos os clientes conectados
+                await Clients.All.ReceberArquivo("ReceberArquivo", nomeArquivo);
+            }
+            catch (Exception ex)
+            {
+                // Trata qualquer exceção que possa ocorrer ao salvar o arquivo
+                Console.WriteLine($"Erro ao salvar o arquivo: {ex.Message}");
+            }
         }
     }
 }

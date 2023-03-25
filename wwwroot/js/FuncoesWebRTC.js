@@ -119,7 +119,9 @@ const newSignal = (partnerClientId, data) => {
         receivedSdpSignal(connection, partnerClientId, signal.sdp);
     } else if (signal.candidate) {
         console.log('WebRTC: candidate signal');
-        receivedCandidateSignal(connection, partnerClientId, signal.candidate);
+        console.log('WebRTC: adding full candidate');
+        connection.addIceCandidate(new RTCIceCandidate(candidate), () => console.log("WebRTC: added candidate successfully"), () => console.log("WebRTC: cannot add candidate"));
+
     } else {
         console.log('WebRTC: adding null candidate');
         connection.addIceCandidate(null, () => console.log("WebRTC: added null candidate successfully"), () => console.log("WebRTC: cannot add null candidate"));
@@ -153,17 +155,13 @@ const receivedSdpSignal = (connection, partnerClientId, sdp) => {
     }, errorHandler);
 }
 
-const receivedCandidateSignal = (connection, partnerClientId, candidate) => {
-    //console.log('candidate', candidate);
-    //if (candidate) {
-    console.log('WebRTC: adding full candidate');
-    connection.addIceCandidate(new RTCIceCandidate(candidate), () => console.log("WebRTC: added candidate successfully"), () => console.log("WebRTC: cannot add candidate"));
-    //} else {
-    //    console.log('WebRTC: adding null candidate');
-    //   connection.addIceCandidate(null, () => console.log("WebRTC: added null candidate successfully"), () => console.log("WebRTC: cannot add null candidate"));
-    //}
-}
 
+
+
+wsconn.on('receiveSignal', (signalingUser, signal) => {
+
+    newSignal(signalingUser.connectionId, signal);
+});
 
 
 const errorHandler = (error) => {

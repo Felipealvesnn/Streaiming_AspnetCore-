@@ -56,7 +56,7 @@ app.UseEndpoints(endpoints =>
 {
     //endpoints.MapHub<Hub>("/cnnctn");
 
-    endpoints.MapHub<Hub>("/cnnctn", options =>
+    endpoints.MapHub<MyHub>("/cnnctn", options =>
     {
         options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.WebSockets;
     });

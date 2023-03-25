@@ -23,8 +23,9 @@ const initializeConnection = (partnerClientId) => {
         }
     });
 
-    connection.onicecandidate = evt => callbackIceCandidate(evt, connection, partnerClientId); // ICE Candidate Callback
 
+    connection.onicecandidate = evt => callbackIceCandidate(evt, connection, partnerClientId); // ICE Candidate Callback
+    //connection.onnegotiationneeded = evt => callbackNegotiationNeeded(connection, evt); // Negotiation Needed Callback
     connection.onaddstream = evt => callbackAddStream(connection, evt); // Add stream handler callback
     connection.onremovestream = evt => callbackRemoveStream(connection, evt); // Remove stream handler callback
 
@@ -54,12 +55,12 @@ const callbackAddStream = (connection, evt) => {
     //attachMediaStream(otherVideo, evt.stream); // from adapter.js
     attachMediaStream(evt);
 }
+
 attachMediaStream = (e) => {
     //console.log(e);
     console.log("OnPage: called attachMediaStream");
-  
+    var partnerAudio = document.querySelector('.audio.partner');
     if (partnerAudio.srcObject !== e.stream) {
-        var tracks = e.stream.getTracks();
         partnerAudio.srcObject = e.stream;
         console.log("OnPage: Attached remote stream");
     }
@@ -69,8 +70,9 @@ const callbackRemoveStream = (connection, evt) => {
     console.log('WebRTC: removing remote stream from partner window');
     // Clear out the partner window
     var otherAudio = document.querySelector('.audio.partner');
-    otherAudio.src = '';
+    otherAudio.src = null;
 }
+
 const initiateOffer = (partnerClientId, stream) => {
     console.log('WebRTC: called initiateoffer: ');
     var connection = getConnection(partnerClientId); // // get a connection for the given partner
@@ -89,11 +91,20 @@ const initiateOffer = (partnerClientId, stream) => {
             console.log('connection before sending offer ', connection);
             setTimeout(() => {
                 sendHubSignal(JSON.stringify({ "sdp": connection.localDescription }), partnerClientId);
-            }, 3000);
+            }, 1000);
         }).catch(err => console.error('WebRTC: Error while setting local description', err));
     }).catch(err => console.error('WebRTC: Error while creating offer', err));
 
-   
+    //connection.createOffer((desc) => { // send an offer for a connection
+    //    console.log('WebRTC: created Offer: ');
+    //    console.log('WebRTC: Description after offer: ', JSON.stringify(desc));
+    //    connection.setLocalDescription(desc, () => {
+    //        console.log('WebRTC: Description after setting locally: ', JSON.stringify(desc));
+    //        console.log('WebRTC: set Local Description: ');
+    //        console.log('connection.localDescription: ', JSON.stringify(connection.localDescription));
+    //        sendHubSignal(JSON.stringify({ "sdp": connection.localDescription }), partnerClientId);
+    //    });
+    //}, errorHandler);
 }
 
 sendHubSignal = (candidate, partnerClientId) => {
@@ -101,6 +112,17 @@ sendHubSignal = (candidate, partnerClientId) => {
     console.log('SignalR: called sendhubsignal ');
     wsconn.invoke('sendSignal', candidate, partnerClientId).catch(errorHandler);
 };
+
+const receivedCandidateSignal = (connection, partnerClientId, candidate) => {
+    //console.log('candidate', candidate);
+    //if (candidate) {
+    console.log('WebRTC: adding full candidate');
+    connection.addIceCandidate(new RTCIceCandidate(candidate), () => console.log("WebRTC: added candidate successfully"), () => console.log("WebRTC: cannot add candidate"));
+    //} else {
+    //    console.log('WebRTC: adding null candidate');
+    //   connection.addIceCandidate(null, () => console.log("WebRTC: added null candidate successfully"), () => console.log("WebRTC: cannot add null candidate"));
+    //}
+}
 
 const newSignal = (partnerClientId, data) => {
     console.log('WebRTC: called newSignal');
@@ -119,12 +141,10 @@ const newSignal = (partnerClientId, data) => {
         receivedSdpSignal(connection, partnerClientId, signal.sdp);
     } else if (signal.candidate) {
         console.log('WebRTC: candidate signal');
-        console.log('WebRTC: adding full candidate');
-        connection.addIceCandidate(new RTCIceCandidate(signal.candidate), () => console.log("WebRTC: added candidate successfully"), () => console.log("WebRTC: cannot add candidate"));
-
+        receivedCandidateSignal(connection, partnerClientId, signal.candidate);
     } else {
         console.log('WebRTC: adding null candidate');
-        connection.addIceCandidate(null, () => console.log("WebRTC: added null candidate successfully"), errorHandler);
+        connection.addIceCandidate(null, () => console.log("WebRTC: added null candidate successfully"), () => console.log("WebRTC: cannot add null candidate"));
     }
 }
 
@@ -159,7 +179,9 @@ const receivedSdpSignal = (connection, partnerClientId, sdp) => {
 
 
 wsconn.on('receiveSignal', (signalingUser, signal) => {
-
+    //console.log('WebRTC: receive signal ');
+    //console.log(signalingUser);
+    //console.log('NewSignal', signal);
     newSignal(signalingUser.connectionId, signal);
 });
 

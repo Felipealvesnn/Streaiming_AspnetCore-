@@ -56,18 +56,41 @@ const closeConnection = (partnerClientId) => {
 
 
 
+const webrtcConstraints = { audio: true, video: true };
 
-const initializeUserMedia = () => {
-    console.log('WebRTC: InitializeUserMedia: ');
-    navigator.getUserMedia(webrtcConstraints, callbackUserMediaSuccess, errorHandler);
+const initializeUserMedia = async () => {
+    try {
+        console.log('WebRTC: InitializeUserMedia');
+        const stream = await navigator.mediaDevices.getUserMedia(webrtcConstraints);
+        callbackUserMediaSuccess(stream);
+    } catch (error) {
+        console.error('WebRTC: InitializeUserMedia error', error);
+        const audioOnlyConstraints = { audio: true, video: false };
+        const audioOnlyStream = await navigator.mediaDevices.getUserMedia(audioOnlyConstraints);
+        callbackUserMediaSuccess(audioOnlyStream);
+        // Call error handler here or display an error message to the user
+    }
 };
 
 const callbackUserMediaSuccess = (stream) => {
-    console.log("WebRTC: got media stream");
+    console.log('WebRTC: got media stream');
     localStream = stream;
 
     const audioTracks = localStream.getAudioTracks();
+    const videoTracks = localStream.getVideoTracks();
+
     if (audioTracks.length > 0) {
         console.log(`Using Audio device: ${audioTracks[0].label}`);
     }
+
+    if (videoTracks.length === 0 && audioTracks.length > 0) {
+        console.log('MediaStream only has audio');
+
+        // Create a new MediaStream with only audio tracks
+        const audioStream = new MediaStream(audioTracks);
+        localStream = audioStream;
+    }
+
+    // Use the localStream for communication
+    // ...
 };

@@ -23,7 +23,7 @@ const initializeConnection = (partnerClientId) => {
         }
     });
     connection.addStream(localstream);
-
+    connection.ontrack = evt => console.log("WebRTC: ontrack", evt);
     connection.onicecandidate = evt => callbackIceCandidate(evt, connection, partnerClientId); // ICE Candidate Callback
     //connection.onnegotiationneeded = evt => callbackNegotiationNeeded(connection, evt); // Negotiation Needed Callback
     connection.onaddstream = evt => callbackAddStream(connection, evt); // Add stream handler callback

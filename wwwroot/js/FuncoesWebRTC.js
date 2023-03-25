@@ -68,8 +68,7 @@ attachMediaStream = (e) => {
 
 const callbackRemoveStream = (connection, evt) => {
     console.log('WebRTC: removing remote stream from partner window');
-    // Clear out the partner window
-    var otherAudio = document.querySelector('.audio.partner');
+
     otherAudio.src = null;
 }
 

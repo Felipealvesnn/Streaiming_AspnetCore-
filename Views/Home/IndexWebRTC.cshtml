@@ -49,18 +49,33 @@
 
 </div>
 
-<div class="container col-6">
 
-    <form id="file-upload-form">
-        <input type="file" name="pdfFile" />
-        <button type="submit">Enviar</button>
-    </form>
-</div>
-
-
+<h3>Arquivos recebidos</h3>
+   <table id="fileTable" class="fileTable table">
+        <thead>
+            <tr>
+                <th>Nome do arquivo</th>
+                <th>Arquivo </th>
+            <th>Hora Recebida</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
 
 
 <main class="content" id="divChat">
+  
+
+ 
+    <div class="row ">
+        <div class="col-lg-6 col-md-12 col-sm-12">
+    <form class="input-group  mb-3" id="file-upload-form">
+        <input name="pdfFile" type="file" class="form-control" id="inputGroupFile02">
+        <button type="submit" class="input-group-text" for="cbcvb">Upload</button>
+    </form>
+        </div>
+    </div>
     <div class="container p-0">
 
         <h1 class="h3 mb-3">Messages</h1>
@@ -160,8 +175,11 @@
     <script>
         'use strict';
         var localstream ;
+        var fileReader
+        var dataChannel;
         const otherAudio = document.getElementById('localVideo');
         const partnerAudio = document.getElementById('remoteVideo');
+        const fileTable = document.getElementById('fileTable');
 
         var hubUrl = document.location.origin + '/cnnctn';
         var wsconn = new signalR.HubConnectionBuilder()
@@ -365,18 +383,44 @@
                 event.preventDefault();
 
                 var formData = new FormData($(this)[0]);
-                var pdfFile = formData.get("pdfFile");
+                var file = formData.get("pdfFile");
 
-                const reader = new FileReader();
+                if (file.size === 0) {
+                    alert('File is empty, please select a non-empty file.');
+                    return;
+                }
 
-                reader.onload = (event) => {
-                    const pdfBytes = new Uint8Array(event.target.result);
-                    wsconn.invoke("EnviarArquivo", pdfBytes, pdfFile.name).catch(function (error) {
-                        console.log(error);
-                    });
+                //send file size and file name as comma separated value.
+                dataChannel.send(file.size + ',' + file.name);
+
+                const chunkSize = 16384;
+                fileReader = new FileReader();
+                let offset = 0;
+                fileReader.addEventListener('error', error => console.error('Error reading file:', error));
+                fileReader.addEventListener('abort', event => console.log('File reading aborted:', event));
+                fileReader.addEventListener('load', e => {
+                    console.log('FileRead.onload ', e);
+                    dataChannel.send(e.target.result);
+                    offset += e.target.result.byteLength;
+                    if (offset < file.size) {
+                        readSlice(offset);
+                    } else {
+                        alert(`${file.name} has been sent successfully.`);
+                      
+                    }
+                });
+                const readSlice = o => {
+                    console.log('readSlice ', o);
+                    const slice = file.slice(offset, o + chunkSize);
+                    fileReader.readAsArrayBuffer(slice);
                 };
+                readSlice(0);
 
-                reader.readAsArrayBuffer(pdfFile);
+                $('#file-upload-form').each(function () {
+                    this.reset();
+                });
+
+
             });
 
 

@@ -37,15 +37,30 @@
 
 </div>
 
-<div class="container col-6">
-
-    <form id="file-upload-form">
-        <input type="file" name="pdfFile" />
-        <button type="submit">Enviar</button>
-    </form>
-</div>
+<h3>Arquivos recebidos</h3>
+<table id="fileTable" class="fileTable table">
+    <thead>
+        <tr>
+            <th>Nome do arquivo</th>
+            <th>Arquivo </th>
+            <th>Hora Recebida</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
 
 <main class="content" id="divChat">
+
+    <div class="row ">
+        <div class="col-lg-6 col-md-12 col-sm-12">
+            <form class="input-group  mb-3" id="file-upload-form">
+                <input name="pdfFile" type="file" class="form-control" id="inputGroupFile02">
+                <button type="submit" class="input-group-text" for="cbcvb">Upload</button>
+            </form>
+        </div>
+    </div>
+
     <div class="container p-0">
 
         <h1 class="h3 mb-3">Messages</h1>
@@ -150,6 +165,10 @@
         const otherAudio = document.getElementById('localVideo');
         const partnerAudio = document.getElementById('remoteVideo');
         const conectParceiro = '@Html.Raw(ViewBag.ConectId)';
+
+        var localstream;
+        var fileReader
+        var dataChannel;
 
         var hubUrl = document.location.origin + '/cnnctn';
         var wsconn = new signalR.HubConnectionBuilder()
@@ -290,20 +309,22 @@
 
 
             $("#formchjat").on("submit", (event) => {
+
+                var valueMsg = $("#ChatConversa").val();
                 var horaAtual = new Date().toLocaleTimeString();
                 var mensagem = `   <div class="chat-message-right pb-4 chatHub">
-                                                                <div>
-                                                                    <img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="rounded-circle mr-1" alt="Chris Wood" width="40" height="40">
-                                                                    <div class="text-muted small text-nowrap mt-2">${horaAtual} am</div>
-                                                                </div>
-                                                                <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
-                                                                    <div class="font-weight-bold mb-1">You</div>
-                                                                           ${valueMsg}
-                                                                </div>
-                                                            </div>
+                                                                                <div>
+                                                                                    <img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="rounded-circle mr-1" alt="Chris Wood" width="40" height="40">
+                                                                                    <div class="text-muted small text-nowrap mt-2">${horaAtual}</div>
+                                                                                </div>
+                                                                                <div class="flex-shrink-1 bg-light rounded py-2 px-3 mr-3">
+                                                                                    <div class="font-weight-bold mb-1">You</div>
+                                                                                           ${valueMsg}
+                                                                                </div>
+                                                                            </div>
 
 
-                                                                            `
+                                                                                            `
 
 
 
@@ -322,22 +343,48 @@
 
 
 
-            document.getElementById("file-upload-form").addEventListener("submit", function (event) {
+            $("#file-upload-form").submit(function (event) {
                 event.preventDefault();
 
-                var formData = new FormData(event.target);
-                var pdfFile = formData.get("pdfFile");
+                var formData = new FormData($(this)[0]);
+                var file = formData.get("pdfFile");
 
-                const reader = new FileReader();
+                if (file.size === 0) {
+                    alert('File is empty, please select a non-empty file.');
+                    return;
+                }
 
-                reader.onload = (event) => {
-                    const pdfBytes = new Uint8Array(event.target.result);
-                    wsconn.invoke("enviararquivo", pdfBytes, "nome do arquivo").catch(function (error) {
-                        console.log(error);
-                    });
+                //send file size and file name as comma separated value.
+                dataChannel.send(file.size + ',' + file.name);
+
+                const chunkSize = 16384;
+                fileReader = new FileReader();
+                let offset = 0;
+                fileReader.addEventListener('error', error => console.error('Error reading file:', error));
+                fileReader.addEventListener('abort', event => console.log('File reading aborted:', event));
+                fileReader.addEventListener('load', e => {
+                    console.log('FileRead.onload ', e);
+                    dataChannel.send(e.target.result);
+                    offset += e.target.result.byteLength;
+                    if (offset < file.size) {
+                        readSlice(offset);
+                    } else {
+                        alert(`${file.name} has been sent successfully.`);
+
+                    }
+                });
+                const readSlice = o => {
+                    console.log('readSlice ', o);
+                    const slice = file.slice(offset, o + chunkSize);
+                    fileReader.readAsArrayBuffer(slice);
                 };
+                readSlice(0);
 
-                reader.readAsArrayBuffer(pdfFile);
+                $('#file-upload-form').each(function () {
+                    this.reset();
+                });
+
+
             });
 
             wsconn.on("receberarquivo", function (pdfBase64) {

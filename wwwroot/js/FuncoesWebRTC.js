@@ -23,7 +23,11 @@ const initializeConnection = (partnerClientId) => {
         }
     });
     connection.addStream(localstream);
-    connection.ontrack = evt => console.log("WebRTC: ontrack", evt);
+    connection.ondatachannel = function (event) {
+        console.log('ondatachannel:', event.channel);
+        dataChannel = event.channel;
+        onDataChannelCreated(dataChannel);
+    };
     connection.onicecandidate = evt => callbackIceCandidate(evt, connection, partnerClientId); // ICE Candidate Callback
     //connection.onnegotiationneeded = evt => callbackNegotiationNeeded(connection, evt); // Negotiation Needed Callback
     connection.onaddstream = evt => callbackAddStream(connection, evt); // Add stream handler callback
@@ -32,6 +36,54 @@ const initializeConnection = (partnerClientId) => {
     connections[partnerClientId] = connection; // Store away the connection based on username
     //console.log(connection);
     return connection;
+}
+
+function onDataChannelCreated(channel) {
+    console.log('onDataChannelCreated:', channel);
+
+    channel.onopen = function () {
+        console.log('Channel opened!!!');
+      //  connectionStatusMessage.innerText = 'Channel opened!!';
+      //  fileInput.disabled = false;
+    };
+
+    channel.onclose = function () {
+        console.log('Channel closed.');
+       // connectionStatusMessage.innerText = 'Channel closed.';
+    }
+
+    channel.onmessage = onReceiveMessageCallback();
+}
+
+function onReceiveMessageCallback() {
+    let count;
+    let fileSize, fileName;
+    let receiveBuffer = [];
+
+    return function onmessage(event) {
+        if (typeof event.data === 'string') {
+            const fileMetaInfo = event.data.split(',');
+            fileSize = parseInt(fileMetaInfo[0]);
+            fileName = fileMetaInfo[1];
+            count = 0;
+            return;
+        }
+
+        receiveBuffer.push(event.data);
+        count += event.data.byteLength;
+
+        if (fileSize === count) {
+            // all data chunks have been received
+            const received = new Blob(receiveBuffer);
+            receiveBuffer = [];
+            var horaAtual = new Date().toLocaleTimeString();
+            $(fileTable).children('tbody').append(`<tr> <td>${fileName}</td> <td><a></a></td>  <td>${horaAtual}</td> </tr>`);
+            const downloadAnchor = $(fileTable).find('a:last');
+            downloadAnchor.attr('href', URL.createObjectURL(received));
+            downloadAnchor.attr('download', fileName);
+            downloadAnchor.text(`${fileName} (${fileSize} bytes)`);
+        }
+    };
 }
 
 const callbackIceCandidate = (evt, connection, partnerClientId) => {
@@ -59,7 +111,7 @@ const callbackAddStream = (connection, evt) => {
 attachMediaStream = (e) => {
     //console.log(e);
     console.log("OnPage: called attachMediaStream");
-    var traks = e.stream.getTracks()
+  
     if (partnerAudio.srcObject !== e.stream) {
         partnerAudio.srcObject = e.stream;
         console.log("OnPage: Attached remote stream");
@@ -76,11 +128,9 @@ const initiateOffer = (partnerClientId, stream) => {
     console.log('WebRTC: called initiateoffer: ');
     var connection = getConnection(partnerClientId); // // get a connection for the given partner
 
-
-    //console.log('initiate Offer stream: ', stream);
-    //console.log("offer connection: ", connection);
-   // connection.addStream(stream);// add our audio/video stream
-    console.log("WebRTC: Added local stream");
+    console.log('Creating Data Channel');
+    dataChannel = connection.createDataChannel('sendDataChannel');
+    onDataChannelCreated(dataChannel);
 
     connection.createOffer().then(offer => {
         console.log('WebRTC: created Offer: ');
@@ -163,9 +213,9 @@ const receivedSdpSignal = (connection, partnerClientId, sdp) => {
                 connection.setLocalDescription(desc, () => {
                     console.log('WebRTC: set Local Description...');
                     console.log('connection.localDescription: ', connection.localDescription);
-                    setTimeout(() => {
+                    //setTimeout(() => {
                     sendHubSignal(JSON.stringify({ "sdp": connection.localDescription }), partnerClientId);
-                    }, 1000);
+                    //}, 1000);
                 }, errorHandler);
             }, errorHandler);
         } else if (connection.remoteDescription.type == "answer") {

@@ -1,0 +1,12 @@
+C:\Users\Rudrex\OneDrive\Documentos\GitHub\Streaiming_AspnetCore-\WEbCam_Streaiming_AspnetCore_Domain\bin\Release\net7.0\WEbCam_Streaiming_AspnetCore_Domain.deps.json
+C:\Users\Rudrex\OneDrive\Documentos\GitHub\Streaiming_AspnetCore-\WEbCam_Streaiming_AspnetCore_Domain\bin\Release\net7.0\WEbCam_Streaiming_AspnetCore_Domain.dll
+C:\Users\Rudrex\OneDrive\Documentos\GitHub\Streaiming_AspnetCore-\WEbCam_Streaiming_AspnetCore_Domain\bin\Release\net7.0\WEbCam_Streaiming_AspnetCore_Domain.pdb
+C:\Users\Rudrex\OneDrive\Documentos\GitHub\Streaiming_AspnetCore-\WEbCam_Streaiming_AspnetCore_Domain\obj\Release\net7.0\WEbCam_Streaiming_AspnetCore_Domain.csproj.AssemblyReference.cache
+C:\Users\Rudrex\OneDrive\Documentos\GitHub\Streaiming_AspnetCore-\WEbCam_Streaiming_AspnetCore_Domain\obj\Release\net7.0\WEbCam_Streaiming_AspnetCore_Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Rudrex\OneDrive\Documentos\GitHub\Streaiming_AspnetCore-\WEbCam_Streaiming_AspnetCore_Domain\obj\Release\net7.0\WEbCam_Streaiming_AspnetCore_Domain.AssemblyInfoInputs.cache
+C:\Users\Rudrex\OneDrive\Documentos\GitHub\Streaiming_AspnetCore-\WEbCam_Streaiming_AspnetCore_Domain\obj\Release\net7.0\WEbCam_Streaiming_AspnetCore_Domain.AssemblyInfo.cs
+C:\Users\Rudrex\OneDrive\Documentos\GitHub\Streaiming_AspnetCore-\WEbCam_Streaiming_AspnetCore_Domain\obj\Release\net7.0\WEbCam_Streaiming_AspnetCore_Domain.csproj.CoreCompileInputs.cache
+C:\Users\Rudrex\OneDrive\Documentos\GitHub\Streaiming_AspnetCore-\WEbCam_Streaiming_AspnetCore_Domain\obj\Release\net7.0\WEbCam_Streaiming_AspnetCore_Domain.dll
+C:\Users\Rudrex\OneDrive\Documentos\GitHub\Streaiming_AspnetCore-\WEbCam_Streaiming_AspnetCore_Domain\obj\Release\net7.0\refint\WEbCam_Streaiming_AspnetCore_Domain.dll
+C:\Users\Rudrex\OneDrive\Documentos\GitHub\Streaiming_AspnetCore-\WEbCam_Streaiming_AspnetCore_Domain\obj\Release\net7.0\WEbCam_Streaiming_AspnetCore_Domain.pdb
+C:\Users\Rudrex\OneDrive\Documentos\GitHub\Streaiming_AspnetCore-\WEbCam_Streaiming_AspnetCore_Domain\obj\Release\net7.0\ref\WEbCam_Streaiming_AspnetCore_Domain.dll

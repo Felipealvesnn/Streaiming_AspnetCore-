@@ -22,7 +22,11 @@ const initializeConnection = (partnerClientId) => {
 
         }
     });
-    connection.addStream(localstream);
+
+    if (localstream) {
+        connection.addStream(localstream);
+    }
+   
     connection.ondatachannel = function (event) {
         console.log('ondatachannel:', event.channel);
         dataChannel = event.channel;

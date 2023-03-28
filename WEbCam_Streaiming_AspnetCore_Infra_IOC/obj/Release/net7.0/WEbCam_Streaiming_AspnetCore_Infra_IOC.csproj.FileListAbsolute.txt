@@ -1,0 +1,15 @@
+C:\Users\Rudrex\OneDrive\Documentos\GitHub\Streaiming_AspnetCore-\WEbCam_Streaiming_AspnetCore_Infra_IOC\bin\Release\net7.0\WEbCam_Streaiming_AspnetCore_Infra_IOC.deps.json
+C:\Users\Rudrex\OneDrive\Documentos\GitHub\Streaiming_AspnetCore-\WEbCam_Streaiming_AspnetCore_Infra_IOC\bin\Release\net7.0\WEbCam_Streaiming_AspnetCore_Infra_IOC.dll
+C:\Users\Rudrex\OneDrive\Documentos\GitHub\Streaiming_AspnetCore-\WEbCam_Streaiming_AspnetCore_Infra_IOC\bin\Release\net7.0\WEbCam_Streaiming_AspnetCore_Infra_IOC.pdb
+C:\Users\Rudrex\OneDrive\Documentos\GitHub\Streaiming_AspnetCore-\WEbCam_Streaiming_AspnetCore_Infra_IOC\bin\Release\net7.0\WEbCam_Streaiming_AspnetCore_Domain.dll
+C:\Users\Rudrex\OneDrive\Documentos\GitHub\Streaiming_AspnetCore-\WEbCam_Streaiming_AspnetCore_Infra_IOC\bin\Release\net7.0\WEbCam_Streaiming_AspnetCore_Domain.pdb
+C:\Users\Rudrex\OneDrive\Documentos\GitHub\Streaiming_AspnetCore-\WEbCam_Streaiming_AspnetCore_Infra_IOC\obj\Release\net7.0\WEbCam_Streaiming_AspnetCore_Infra_IOC.csproj.AssemblyReference.cache
+C:\Users\Rudrex\OneDrive\Documentos\GitHub\Streaiming_AspnetCore-\WEbCam_Streaiming_AspnetCore_Infra_IOC\obj\Release\net7.0\WEbCam_Streaiming_AspnetCore_Infra_IOC.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Rudrex\OneDrive\Documentos\GitHub\Streaiming_AspnetCore-\WEbCam_Streaiming_AspnetCore_Infra_IOC\obj\Release\net7.0\WEbCam_Streaiming_AspnetCore_Infra_IOC.AssemblyInfoInputs.cache
+C:\Users\Rudrex\OneDrive\Documentos\GitHub\Streaiming_AspnetCore-\WEbCam_Streaiming_AspnetCore_Infra_IOC\obj\Release\net7.0\WEbCam_Streaiming_AspnetCore_Infra_IOC.AssemblyInfo.cs
+C:\Users\Rudrex\OneDrive\Documentos\GitHub\Streaiming_AspnetCore-\WEbCam_Streaiming_AspnetCore_Infra_IOC\obj\Release\net7.0\WEbCam_Streaiming_AspnetCore_Infra_IOC.csproj.CoreCompileInputs.cache
+C:\Users\Rudrex\OneDrive\Documentos\GitHub\Streaiming_AspnetCore-\WEbCam_Streaiming_AspnetCore_Infra_IOC\obj\Release\net7.0\WEbCam_Streaiming_AspnetCore_Infra_IOC.csproj.CopyComplete
+C:\Users\Rudrex\OneDrive\Documentos\GitHub\Streaiming_AspnetCore-\WEbCam_Streaiming_AspnetCore_Infra_IOC\obj\Release\net7.0\WEbCam_Streaiming_AspnetCore_Infra_IOC.dll
+C:\Users\Rudrex\OneDrive\Documentos\GitHub\Streaiming_AspnetCore-\WEbCam_Streaiming_AspnetCore_Infra_IOC\obj\Release\net7.0\refint\WEbCam_Streaiming_AspnetCore_Infra_IOC.dll
+C:\Users\Rudrex\OneDrive\Documentos\GitHub\Streaiming_AspnetCore-\WEbCam_Streaiming_AspnetCore_Infra_IOC\obj\Release\net7.0\WEbCam_Streaiming_AspnetCore_Infra_IOC.pdb
+C:\Users\Rudrex\OneDrive\Documentos\GitHub\Streaiming_AspnetCore-\WEbCam_Streaiming_AspnetCore_Infra_IOC\obj\Release\net7.0\ref\WEbCam_Streaiming_AspnetCore_Infra_IOC.dll

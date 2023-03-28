@@ -1,12 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "YRV0i6lZXi8WHIQ3dWtApkIWLDUBYGK/RITSuHI598WYekJJee33EygV9aFlXXwM5+P8fqFyUt/ZUNAfnO0PCQ==",
+  "dgSpecHash": "T19r1fYEKkCRx8D9BEIypO+qx9kmBqIlmRztpLnoRGIOaFjBoBWAhVv/bkcuUs3hFh5MaMfYUSWElmecJw0mSw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\admin\\Documents\\Felipe\\Github\\WEbCam_Streaiming_AspnetCore\\WEbCam_Streaiming_AspnetCore_Infra_IOC\\WEbCam_Streaiming_AspnetCore_Infra_IOC.csproj",
+  "projectFilePath": "C:\\Users\\Rudrex\\OneDrive\\Documentos\\GitHub\\Streaiming_AspnetCore-\\WEbCam_Streaiming_AspnetCore_Infra_IOC\\WEbCam_Streaiming_AspnetCore_Infra_IOC.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\admin\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\7.0.0\\microsoft.extensions.configuration.abstractions.7.0.0.nupkg.sha512",
-    "C:\\Users\\admin\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\7.0.0\\microsoft.extensions.dependencyinjection.abstractions.7.0.0.nupkg.sha512",
-    "C:\\Users\\admin\\.nuget\\packages\\microsoft.extensions.primitives\\7.0.0\\microsoft.extensions.primitives.7.0.0.nupkg.sha512"
+    "C:\\Users\\Rudrex\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\7.0.0\\microsoft.extensions.configuration.abstractions.7.0.0.nupkg.sha512",
+    "C:\\Users\\Rudrex\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\7.0.0\\microsoft.extensions.dependencyinjection.abstractions.7.0.0.nupkg.sha512",
+    "C:\\Users\\Rudrex\\.nuget\\packages\\microsoft.extensions.primitives\\7.0.0\\microsoft.extensions.primitives.7.0.0.nupkg.sha512"
   ],
   "logs": []
 }

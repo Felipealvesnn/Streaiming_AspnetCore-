@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Rudrex\\OneDrive\\Documentos\\GitHub\\Streaiming_AspnetCore-\\WEbCam_Streaiming_AspnetCore_Domain\\WEbCam_Streaiming_AspnetCore_Domain.csproj": {}
+    "C:\\Users\\Rudrex\\OneDrive\\Documentos\\GitHub\\Streaiming_AspnetCore-\\WEbCam_Streaiming_AspnetCore.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Rudrex\\OneDrive\\Documentos\\GitHub\\Streaiming_AspnetCore-\\WEbCam_Streaiming_AspnetCore_Domain\\WEbCam_Streaiming_AspnetCore_Domain.csproj": {
+    "C:\\Users\\Rudrex\\OneDrive\\Documentos\\GitHub\\Streaiming_AspnetCore-\\WEbCam_Streaiming_AspnetCore.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Rudrex\\OneDrive\\Documentos\\GitHub\\Streaiming_AspnetCore-\\WEbCam_Streaiming_AspnetCore_Domain\\WEbCam_Streaiming_AspnetCore_Domain.csproj",
-        "projectName": "WEbCam_Streaiming_AspnetCore_Domain",
-        "projectPath": "C:\\Users\\Rudrex\\OneDrive\\Documentos\\GitHub\\Streaiming_AspnetCore-\\WEbCam_Streaiming_AspnetCore_Domain\\WEbCam_Streaiming_AspnetCore_Domain.csproj",
+        "projectUniqueName": "C:\\Users\\Rudrex\\OneDrive\\Documentos\\GitHub\\Streaiming_AspnetCore-\\WEbCam_Streaiming_AspnetCore.csproj",
+        "projectName": "WEbCam_Streaiming_AspnetCore",
+        "projectPath": "C:\\Users\\Rudrex\\OneDrive\\Documentos\\GitHub\\Streaiming_AspnetCore-\\WEbCam_Streaiming_AspnetCore.csproj",
         "packagesPath": "C:\\Users\\Rudrex\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Rudrex\\OneDrive\\Documentos\\GitHub\\Streaiming_AspnetCore-\\WEbCam_Streaiming_AspnetCore_Domain\\obj\\",
+        "outputPath": "C:\\Users\\Rudrex\\OneDrive\\Documentos\\GitHub\\Streaiming_AspnetCore-\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -43,6 +43,28 @@
       "frameworks": {
         "net7.0": {
           "targetAlias": "net7.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.SignalR.Client": {
+              "target": "Package",
+              "version": "[7.0.4, )"
+            },
+            "Microsoft.AspNetCore.SignalR.Common": {
+              "target": "Package",
+              "version": "[7.0.4, )"
+            },
+            "Microsoft.AspNetCore.SignalR.Protocols.Json": {
+              "target": "Package",
+              "version": "[7.0.4, )"
+            },
+            "Microsoft.Azure.SignalR": {
+              "target": "Package",
+              "version": "[1.4.0, )"
+            },
+            "System.Drawing.Common": {
+              "target": "Package",
+              "version": "[7.0.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -55,6 +77,9 @@
           "assetTargetFallback": true,
           "warn": true,
           "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }

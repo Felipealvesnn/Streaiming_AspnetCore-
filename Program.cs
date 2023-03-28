@@ -1,6 +1,7 @@
 using WEbCam_Streaiming_AspnetCore;
 using WEbCam_Streaiming_AspnetCore.Hubs;
-using WEbCam_Streaiming_AspnetCore.Models;
+using WEbCam_Streaiming_AspnetCore_Domain.HubsModels;
+using WEbCam_Streaiming_AspnetCore_Infra_IOC;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,11 +23,8 @@ builder.Services.AddSignalR(options =>
     options.MaximumReceiveMessageSize = 502400000; // tamanho máximo em bytes
 });
 
-builder.Services.AddSingleton<List<User>>();
-builder.Services.AddSingleton<List<Connection>>();
-builder.Services.AddSingleton<List<Call>>();
 
-
+builder.Services.ConfiguraçaoInjecao(builder.Configuration);
 
 var app = builder.Build();
 
@@ -54,13 +52,17 @@ app.MapControllerRoute(
 
 app.UseEndpoints(endpoints =>
 {
-    //endpoints.MapHub<Hub>("/cnnctn");
-
+    endpoints.MapHub<HubAutomatico>("/HubAutomatico", options =>
+    {
+        options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.WebSockets;
+    });
+  
     endpoints.MapHub<MyHub>("/cnnctn", options =>
     {
         options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.WebSockets;
     });
 
+  
 });
 
 app.Run();

@@ -10,8 +10,7 @@ Sistema em Aspnet core/mvc de uma video chamda
 
 - `WebRTC`
 
-<img src="./wwwroot/images/camera.png">
-<img src="./wwwroot/images/cemaragif.gif">
+- `Bootstrap`
 
 
 ## Ainda em desenvolvimento

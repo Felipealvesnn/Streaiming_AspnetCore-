@@ -1,3 +1,5 @@
+/// <reference path="funcoeshub.js" />
+/// <reference path="funcoeshub.js" />
 const acceptCall = () => {
     var callingUserName = $('#callmodal').attr('data-cid');
    wsconn.invoke('AnswerCall', true, caller).catch(err => console.error(err));
@@ -13,6 +15,7 @@ const declineCall = () => {
     var callingUserName = $('#callmodal').attr('data-cid');
    wsconn.invoke('AnswerCall', false, caller).catch(err => console.error(err));
     caller = null;
+    play_audio('stop')
     $('#callmodal').modal('hide');
 };
 
@@ -30,7 +33,7 @@ const limparChat = () => {
 }
 const callUser = (connectionId) => {
     /* caller = { "connectionId": connectionId }*/
-
+    play_audio('play')
    wsconn.invoke('call', { "connectionId": connectionId });
 };
 const endCall = (connectionId) => {
@@ -89,3 +92,14 @@ const initializeUserMedia = async () => {
         }
     }
 };
+
+function play_audio(task) {
+    if (task == 'play') {
+        $("#MyAudio").trigger('play');
+    }
+    if (task == 'stop') {
+        $("#MyAudio").trigger('pause');
+        $("#MyAudio").prop("currentTime", 0);
+    }
+}
+

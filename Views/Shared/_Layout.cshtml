@@ -70,7 +70,9 @@
         })
 
     </script>
-   
+    <audio controls="controls" loop id="MyAudio" style="display:none">
+        <source src="~/sounds/alert.mp3" type="audio/mpeg" />
+    </audio>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

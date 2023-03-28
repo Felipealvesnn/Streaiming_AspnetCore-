@@ -1,5 +1,6 @@
 ﻿using System.Threading.Channels;
 using WEbCam_Streaiming_AspnetCore.Models;
+using WEbCam_Streaiming_AspnetCore_Domain.HubsModels;
 
 namespace WEbCam_Streaiming_AspnetCore.Hubs
 {

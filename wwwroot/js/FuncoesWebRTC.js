@@ -140,7 +140,7 @@ const initiateOffer = (partnerClientId, stream) => {
             console.log('connection before sending offer ', connection);
             setTimeout(() => {
                 sendHubSignal(JSON.stringify({ "sdp": connection.localDescription }), partnerClientId);
-            }, 1000);
+            }, 3000);
         }).catch(err => console.error('WebRTC: Error while setting local description', err));
     }).catch(err => console.error('WebRTC: Error while creating offer', err));
 

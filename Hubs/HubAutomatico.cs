@@ -5,21 +5,22 @@ using WEbCam_Streaiming_AspnetCore_Domain.HubsModels;
 
 namespace WEbCam_Streaiming_AspnetCore.Hubs
 {
-    public class MyHub :Hub<IConnectionHub>
+    public class HubAutomatico : Hub<IConnectionHubAutomic>
     {
-        private readonly List<User> _users;
-        private readonly List<Connection> _connections;
-        private readonly List<Call> _calls;
+        private readonly List<UserAutomatic> _users;
+        private readonly List<ConnectionAutomatic> _connections;
+        private readonly List<CallAutomatic> _calls;
 
-        public MyHub(List<User> users, List<Connection> connections, List<Call> calls)
+        public HubAutomatico(List<UserAutomatic> users, List<ConnectionAutomatic> connections, List<CallAutomatic> calls)
         {
             _users = users;
             _connections = connections;
             _calls = calls;
         }
+
         public async Task Join(string username)
         {
-            _users.Add(new User
+            _users.Add(new UserAutomatic
             {
                 Username = username,
                 ConnectionId = Context.ConnectionId
@@ -27,7 +28,6 @@ namespace WEbCam_Streaiming_AspnetCore.Hubs
 
             await UpdateOnlineUsers();
         }
-
 
         public override async Task OnDisconnectedAsync(Exception exception)
         {
@@ -40,7 +40,7 @@ namespace WEbCam_Streaiming_AspnetCore.Hubs
             await base.OnDisconnectedAsync(exception);
         }
 
-        public async Task Call(User targetConnectionId)
+        public async Task Call(UserAutomatic targetConnectionId)
         {
             var callingUser = _users.SingleOrDefault(u => u.ConnectionId == Context.ConnectionId);
             var targetUser = _users.SingleOrDefault(u => u.ConnectionId == targetConnectionId.ConnectionId);
@@ -60,7 +60,7 @@ namespace WEbCam_Streaiming_AspnetCore.Hubs
 
             await Clients.Client(targetConnectionId.ConnectionId).ChamadaRecebida(callingUser);
 
-            _calls.Add(new Call
+            _calls.Add(new CallAutomatic
             {
                 From = callingUser,
                 To = targetUser,
@@ -68,13 +68,13 @@ namespace WEbCam_Streaiming_AspnetCore.Hubs
             });
         }
 
-        public async Task AnswerCall(bool acceptCall, User targetConnectionId)
+        public async Task AnswerCall(bool acceptCall, UserAutomatic targetConnectionId)
         {
             var callingUser = _users.SingleOrDefault(u => u.ConnectionId == Context.ConnectionId);
             var targetUser = _users.SingleOrDefault(u => u.ConnectionId == targetConnectionId.ConnectionId);
 
 
-           
+
 
             if (targetUser == null)
             {
@@ -106,9 +106,9 @@ namespace WEbCam_Streaiming_AspnetCore.Hubs
             // Remove all the other offers for the call initiator, in case they have multiple calls out
             _calls.RemoveAll(c => c.From.ConnectionId == targetUser.ConnectionId);
 
-            _connections.Add(new Connection
+            _connections.Add(new ConnectionAutomatic
             {
-                Users = new List<User> { callingUser, targetUser }
+                Users = new List<UserAutomatic> { callingUser, targetUser }
             });
             await Clients.Caller.LigaCaoAceita(targetUser);
             await Clients.Client(targetConnectionId.ConnectionId).LigaCaoAceita(callingUser);
@@ -163,8 +163,8 @@ namespace WEbCam_Streaiming_AspnetCore.Hubs
             var userCall = GetConnection(callingUser.ConnectionId);
             if (userCall != null && userCall.Users.Exists(u => u.ConnectionId == targetUser.ConnectionId))
             {
-                 await Clients.Client(targetUser.ConnectionId).ReceiveSignal(callingUser, data);
-               // await Clients.Caller.ReceiveData(callingUser, data);
+                await Clients.Client(targetUser.ConnectionId).ReceiveSignal(callingUser, data);
+                // await Clients.Caller.ReceiveData(callingUser, data);
             }
         }
 
@@ -187,58 +187,11 @@ namespace WEbCam_Streaiming_AspnetCore.Hubs
             }
         }
 
-        public async Task UploadStream(ChannelReader<string> stream, string targetConnectionId)
-        {
-            var callingUser = _users.SingleOrDefault(u => u.ConnectionId == Context.ConnectionId);
+      
 
-            while (await stream.WaitToReadAsync())
-            {
-                while (stream.TryRead(out var item))
-                {
-                    if (!string.IsNullOrEmpty(item))
-                    {
-                        var dataStream = item.Split('|');
-                        if (!string.IsNullOrEmpty(dataStream[0]))
-                        {
-                            var connectionId = dataStream[0].Trim().TrimStart('\b');
-                            var targetUser = _users.SingleOrDefault(u => u.ConnectionId == connectionId);
-                            if (targetUser != null)
-                            {
-                                await Clients.Client(targetUser.ConnectionId).ReceiveSignal(callingUser, dataStream[1]);
-                            }
-                        }
+    
 
-                    }
-
-
-                }
-            }
-        }
-
-        public ChannelReader<string> DownloadStream(int delay, CancellationToken cancellationToken)
-        {
-            var channel = Channel.CreateUnbounded<string>();
-            _ = WriteItemsAsync(channel.Writer, DateTime.Now.Millisecond.ToString(), delay, cancellationToken);
-
-            return channel.Reader;
-        }
-
-        private static async Task WriteItemsAsync(ChannelWriter<string> writer, string data, int delay, CancellationToken cancellationToken)
-        {
-            Exception localException = null;
-            try
-            {
-                await writer.WriteAsync(data, cancellationToken);
-                await Task.Delay(delay, cancellationToken);
-
-            }
-            catch (Exception ex)
-            {
-                localException = ex;
-            }
-
-            writer.Complete(localException);
-        }
+       
 
         private async Task UpdateOnlineUsers()
         {
@@ -246,15 +199,10 @@ namespace WEbCam_Streaiming_AspnetCore.Hubs
             await Clients.All.AttUsuariosOnline(_users);
         }
 
-        private Connection GetConnection(string connectionId)
+        private ConnectionAutomatic GetConnection(string connectionId)
         {
             var matchingCall = _connections.FirstOrDefault(uc => uc.Users.FirstOrDefault(u => u.ConnectionId == connectionId) != null);
             return matchingCall;
-        }
-        [HubMethodName("enviararquivo")]
-        public async Task EnviarArquivo(byte[] fileData)
-        {
-           
         }
     }
 }

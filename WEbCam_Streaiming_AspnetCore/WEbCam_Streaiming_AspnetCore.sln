@@ -1,0 +1,51 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33122.133
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WEbCam_Streaiming_AspnetCore", "WEbCam_Streaiming_AspnetCore.csproj", "{BA6733FE-2846-40B9-A18F-6F9AEA28B339}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WEbCam_Streaiming_AspnetCore_Domain", "..\WEbCam_Streaiming_AspnetCore_Domain\WEbCam_Streaiming_AspnetCore_Domain.csproj", "{CDEAF95F-795A-490C-B5DA-8A464897C43A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WEbCam_Streaiming_AspnetCore_Infra_IOC", "..\WEbCam_Streaiming_AspnetCore_Infra_IOC\WEbCam_Streaiming_AspnetCore_Infra_IOC.csproj", "{E5B994B1-500F-407B-8C4E-0E621A35FB18}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BA6733FE-2846-40B9-A18F-6F9AEA28B339}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA6733FE-2846-40B9-A18F-6F9AEA28B339}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA6733FE-2846-40B9-A18F-6F9AEA28B339}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA6733FE-2846-40B9-A18F-6F9AEA28B339}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDEAF95F-795A-490C-B5DA-8A464897C43A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDEAF95F-795A-490C-B5DA-8A464897C43A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDEAF95F-795A-490C-B5DA-8A464897C43A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDEAF95F-795A-490C-B5DA-8A464897C43A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5B994B1-500F-407B-8C4E-0E621A35FB18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5B994B1-500F-407B-8C4E-0E621A35FB18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5B994B1-500F-407B-8C4E-0E621A35FB18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5B994B1-500F-407B-8C4E-0E621A35FB18}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5A63BF42-5733-4676-8FFA-3A5EEEB1B3AD}
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 4
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://wescleydutra.visualstudio.com/
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = WEbCam_Streaiming_AspnetCore.csproj
+		SccLocalPath1 = .
+		SccProjectUniqueName2 = ..\\WEbCam_Streaiming_AspnetCore_Domain\\WEbCam_Streaiming_AspnetCore_Domain.csproj
+		SccProjectName2 = ../WEbCam_Streaiming_AspnetCore_Domain
+		SccLocalPath2 = ..\\WEbCam_Streaiming_AspnetCore_Domain
+		SccProjectUniqueName3 = ..\\WEbCam_Streaiming_AspnetCore_Infra_IOC\\WEbCam_Streaiming_AspnetCore_Infra_IOC.csproj
+		SccProjectName3 = ../WEbCam_Streaiming_AspnetCore_Infra_IOC
+		SccLocalPath3 = ..\\WEbCam_Streaiming_AspnetCore_Infra_IOC
+	EndGlobalSection
+EndGlobal

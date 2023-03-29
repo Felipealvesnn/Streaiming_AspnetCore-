@@ -62,7 +62,7 @@
             <tr>
                 <th>Nome do arquivo</th>
                 <th>Arquivo </th>
-            <th>Hora Recebida</th>
+                <th>Hora Recebida</th>
             </tr>
         </thead>
         <tbody>
@@ -210,8 +210,7 @@
 
 
             wsconn.start().then(() => {
-                user = generateId();
-                userJoin(user);
+                askUsername()
                 initializeUserMedia() // ligo a cam
                 IdConecçao = wsconn.connection.connectionId
                 console.info(`Connected as ${user}`);
@@ -236,7 +235,7 @@
                             var onlineUsers = '';
                             onlineUsers += '<li class="list-group-item usuarios" data-cid=' + userList[index].connectionId + ' data-username=' + userList[index].username + '>';
                             onlineUsers += '<div class="d-lg-flex flex-row">';
-                            onlineUsers += '<div class="m-1 d-lg-flex justify-content-center align-items-center"><small>   ' + userList[index].connectionId + '</small></div>';
+                            onlineUsers += '<div class="m-1 d-lg-flex justify-content-center align-items-center"><small>' + userList[index].connectionId + '</small>(' + userList[index].username + ')</div>';
                             onlineUsers += '<div class="d-flex flex-row justify-content-center align-items-center">';
                             onlineUsers += '<div class="m-1 d-lg-flex justify-content-center align-items-center"><span data-callstatus=' + userList[index].inCall + '>' + ((userList[index].inCall == true) ? '<small>(Ocupado)</small>' : '<small>(Disponivel)</small>') + '</span></div>';
                             onlineUsers += '<div class="m-2"><button id="btnCallUser" type="button" class="btn btn-primary btn-sm" ' + ((userList[index].inCall == true) ? 'disabled' : '') + ' onclick="callUser(\'' + userList[index].connectionId + '\')">Ligar</button></div>';

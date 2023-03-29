@@ -19,6 +19,26 @@ const declineCall = () => {
     $('#callmodal').modal('hide');
 };
 
+const askUsername = () => {
+ 
+    alertify.prompt('Selecione seu nome', 'Qual seu nome?', '', (evt, Username) => {
+        if (Username !== '') {
+            user = Username
+            userJoin(Username);
+        }
+
+        else {
+            user = generateId();
+            userJoin(user);
+        }
+         
+
+    }, () => {
+        user = generateId();
+        userJoin(user);
+    });
+};
+
 const userJoin = (username) => {
     console.info('Joining...');
    wsconn.invoke("Join", username).catch((err) => {

@@ -144,7 +144,7 @@ const initiateOffer = (partnerClientId, stream) => {
             console.log('connection before sending offer ', connection);
             setTimeout(() => {
                 sendHubSignal(JSON.stringify({ "sdp": connection.localDescription }), partnerClientId);
-            }, 3000);
+            }, 5000);
         }).catch(err => console.error('WebRTC: Error while setting local description', err));
     }).catch(err => console.error('WebRTC: Error while creating offer', err));
 
@@ -217,9 +217,9 @@ const receivedSdpSignal = (connection, partnerClientId, sdp) => {
                 connection.setLocalDescription(desc, () => {
                     console.log('WebRTC: set Local Description...');
                     console.log('connection.localDescription: ', connection.localDescription);
-                    //setTimeout(() => {
+                    setTimeout(() => {
                     sendHubSignal(JSON.stringify({ "sdp": connection.localDescription }), partnerClientId);
-                    //}, 1000);
+                    }, 1000);
                 }, errorHandler);
             }, errorHandler);
         } else if (connection.remoteDescription.type == "answer") {

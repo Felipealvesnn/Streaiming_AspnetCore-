@@ -272,6 +272,7 @@
             wsconn.on('LidacaoNegada', (callingUser, msg) => {
                 console.info('Ligação negada: ' + JSON.stringify(callingUser));
                 alert("Ligação negada: " + msg)
+                play_audio('stop')
             });
 
             // onde dispara a ligação recebida e salvo o user na variavel "caller"

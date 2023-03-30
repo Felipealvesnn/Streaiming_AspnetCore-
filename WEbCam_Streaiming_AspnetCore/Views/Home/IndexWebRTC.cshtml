@@ -197,6 +197,15 @@
 
         var IdConecçao = null
         var peerConnectionConfig = { "iceServers": [{ "url": "stun:stun.l.google.com:19302" }] };
+        //var peerConnectionConfig = {
+        //    iceServers: [
+        //        {
+        //            urls: "turn:10.0.0.1:3478",
+        //            username: "w2e",
+        //            credential: "12345"
+        //        }
+        //    ]
+        //};
         var peerConnection = null //instancia o webRTC
         var users = [], localStream, connections = {};
         var user = null;

@@ -3,17 +3,9 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - WEbCam</title>
+    <title>@ViewData["Title"] - WEbCam_Streaiming_AspnetCore</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link href="~/lib/alertifyjs/css/alertify.css" rel="stylesheet" />
-    <link href="~/lib/alertifyjs/css/alertify.min.css" rel="stylesheet" />
-    <link href="~/lib/alertifyjs/css/alertify.rtl.css" rel="stylesheet" />
-    <link href="~/lib/alertifyjs/css/alertify.rtl.min.css" rel="stylesheet" />
-    <link href="~/lib/alertifyjs/css/themes/semantic.css" rel="stylesheet" />
-    <link href="~/lib/alertifyjs/css/themes/semantic.min.css" rel="stylesheet" />
-    <link href="~/lib/alertifyjs/css/themes/semantic.rtl.css" rel="stylesheet" />
-    <link href="~/lib/alertifyjs/css/themes/semantic.rtl.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/WEbCam_Streaiming_AspnetCore.styles.css" asp-append-version="true" />
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
 </head>
@@ -21,7 +13,7 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">WEbCam </a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">INDEX</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -53,21 +45,13 @@
             &copy; @DateTime.Now.ToString() - WEbCam_Streaiming_AspnetCore - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
- @*   <script src="https://code.jquery.com/jquery-3.6.3.js"></script>*@
+ @*   <script src="~/lib/jquery/dist/jquery.min.js"></script>*@
+    <script src="https://code.jquery.com/jquery-3.6.3.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/lib/SignLr/signalr.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.10/dist/clipboard.min.js"></script>
-    <script src="~/js/jsextras/adapter.min.js"></script>
-    <script src="~/js/jsextras/adapter.screenshare.js"></script>
-    <script src="~/js/jsextras/adapter.screenshare.min.js"></script>
-    <script src="~/js/jsextras/custom.js"></script>
-    <script src="~/js/jsextras/utilsrtc.js"></script>
-    <script src="~/lib/alertifyjs/alertify.js"></script>
-    <script src="~/lib/alertifyjs/alertify.min.js"></script>
-    
+
   @* //tem q ser o ultimo script*@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script>
@@ -80,9 +64,7 @@
         })
 
     </script>
-    <audio controls="controls" loop id="MyAudio" style="display:none">
-        <source src="~/sounds/alert.mp3" type="audio/mpeg" />
-    </audio>
+   
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

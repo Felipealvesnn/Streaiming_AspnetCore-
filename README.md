@@ -1,2 +1,16 @@
-# Streaiming_AspnetCore-
-Projeto aspnet core q vou usar um Sistema de Streaming usando SignarIR e WebRTC
+# ASPNET CORE CAM 
+Sistema em Aspnet core/mvc de uma video chamda
+
+ ## Tecnologias utilizadas
+
+- `C#`
+
+- `SignalR`
+
+
+- `WebRTC`
+
+- `Bootstrap`
+
+
+## Ainda em desenvolvimento
